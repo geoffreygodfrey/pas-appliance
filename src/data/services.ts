@@ -43,6 +43,8 @@ export interface Service {
   cardTitle: string;
   /** Short card description on the homepage grid. */
   cardCopy: string;
+  /** Optional image shown at the top of the homepage card (path served from /public). */
+  cardImage?: string;
   /** Booking-form display label for the appliance type option. */
   formLabel: string;
   /** Short label used in breadcrumbs. */
@@ -86,6 +88,7 @@ export const services: Service[] = [
     id: 'refrigerator',
     navLabel: 'Fridge Repair',
     cardTitle: 'Fridge repair',
+    cardImage: '/images/services/fridge.webp',
     cardCopy:
       'Not cooling, leaking, noisy or building up frost? Help us understand what your refrigerator is doing and request a repair.',
     formLabel: 'Refrigerator',
@@ -98,7 +101,7 @@ export const services: Service[] = [
       image: { id: 32391499, alt: 'Repair technicians working on a large refrigerator unit with its panel opened', ratio: 'landscape' },
     },
     seo: {
-      title: 'Refrigerator Repair in Brampton & the GTA | GTA Appliance Repair',
+      title: 'Refrigerator Repair in Brampton & the GTA | PAS Appliance Repair',
       description:
         'Refrigerator not cooling, leaking or making noise? Request refrigerator repair service for your Brampton or GTA home and describe the problem in your own words.',
     },
@@ -143,6 +146,7 @@ export const services: Service[] = [
     id: 'washer',
     navLabel: 'Washer & Dryer Repair',
     cardTitle: 'Washer & dryer repair',
+    cardImage: '/images/services/washer.webp',
     cardCopy:
       "From a washer that won't drain to a dryer that won't heat — describe what your laundry appliances are doing and request service.",
     formLabel: 'Washer or dryer',
@@ -155,7 +159,7 @@ export const services: Service[] = [
       image: { id: 34397245, alt: 'Close-up view into the stainless steel drum of a modern washing machine', ratio: 'landscape' },
     },
     seo: {
-      title: 'Washer & Dryer Repair in Brampton & the GTA | GTA Appliance Repair',
+      title: 'Washer & Dryer Repair in Brampton & the GTA | PAS Appliance Repair',
       description:
         'Washer not draining or dryer not heating? Request washer and dryer repair service for your Brampton or GTA home and describe the problem in your own words.',
     },
@@ -205,6 +209,7 @@ export const services: Service[] = [
     id: 'stove',
     navLabel: 'Stove Repair',
     cardTitle: 'Stove & cooktop repair',
+    cardImage: '/images/services/stove.webp',
     cardCopy:
       'Burner not heating, controls not responding or ignition trouble? Contact us to confirm your appliance type and request repair assistance.',
     formLabel: 'Stove / cooktop',
@@ -217,7 +222,7 @@ export const services: Service[] = [
       image: { id: 31944361, alt: 'A stainless steel gas stove with its grates and burners visible in a kitchen', ratio: 'landscape' },
     },
     seo: {
-      title: 'Stove & Cooktop Repair in Brampton & the GTA | GTA Appliance Repair',
+      title: 'Stove & Cooktop Repair in Brampton & the GTA | PAS Appliance Repair',
       description:
         'Burner not heating or stove controls not responding? Contact us to confirm your stove or cooktop type and request repair service in Brampton and the GTA.',
     },
@@ -269,6 +274,7 @@ export const services: Service[] = [
     id: 'dishwasher',
     navLabel: 'Dishwasher Repair',
     cardTitle: 'Dishwasher repair',
+    cardImage: '/images/services/dishwasher.webp',
     cardCopy:
       "Not draining, leaking or leaving dishes dirty? Tell us what your dishwasher is doing and request service in your area.",
     formLabel: 'Dishwasher',
@@ -281,7 +287,7 @@ export const services: Service[] = [
       image: { id: 21620201, alt: 'An open dishwasher rack loaded with dishes inside a modern kitchen', ratio: 'landscape' },
     },
     seo: {
-      title: 'Dishwasher Repair in Brampton & the GTA | GTA Appliance Repair',
+      title: 'Dishwasher Repair in Brampton & the GTA | PAS Appliance Repair',
       description:
         'Dishwasher not draining, leaking or leaving dishes dirty? Request dishwasher repair service for your Brampton or GTA home and describe the problem in your own words.',
     },

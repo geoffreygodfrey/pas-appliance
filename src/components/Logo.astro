@@ -1,27 +1,46 @@
 ---
-import Icon from './Icon.astro';
-
 interface Props {
+  /** Light/dark surface treatment for the optional wordmark. */
   variant?: 'light' | 'dark';
   class?: string;
   tag?: 'span' | 'a';
   href?: string;
+  /** Rendered logo height, e.g. "3rem". Defaults to 2.75rem. */
+  height?: string;
+  /** Show the brand name and tagline beside the logo image. */
+  showName?: boolean;
 }
 
-const { variant = 'light', class: className = '', tag = 'span', href } = Astro.props;
+const {
+  variant = 'light',
+  class: className = '',
+  tag = 'span',
+  href,
+  height = '2.75rem',
+  showName = false,
+} = Astro.props;
 
 const classes = ['logo', `logo--${variant}`, className].filter(Boolean).join(' ');
 const Tag = tag;
 ---
 
-<Tag href={href} class={classes} aria-label="GTA Appliance Repair — home">
-  <span class="logo__mark" aria-hidden="true">
-    <Icon name="wrench" size={18} strokeWidth={2.2} />
-  </span>
-  <span class="logo__word">
-    <span class="logo__name">GTA Appliance Repair</span>
-    <span class="logo__tag">Brampton &amp; the GTA</span>
-  </span>
+<Tag href={href} class={classes} style={`--logo-h: ${height}`}>
+  <img
+    class="logo__img"
+    src="/logo.svg"
+    alt="PAS Appliance Repair"
+    width="715"
+    height="715"
+    decoding="async"
+  />
+  {
+    showName && (
+      <span class="logo__word">
+        <span class="logo__name">PAS Appliance Repair</span>
+        <span class="logo__tag">Brampton &amp; the GTA</span>
+      </span>
+    )
+  }
 </Tag>
 
 <style>
@@ -37,16 +56,13 @@ const Tag = tag;
     color: var(--color-white);
   }
 
-  .logo__mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: var(--radius-md);
-    background: var(--color-primary);
-    color: var(--color-white);
+  .logo__img {
+    display: block;
+    height: var(--logo-h, 2.75rem);
+    width: auto;
     flex: none;
+    border-radius: var(--radius-sm);
+    background: var(--color-white);
   }
 
   .logo__word {
@@ -55,7 +71,7 @@ const Tag = tag;
   }
 
   .logo__name {
-    font-size: 1.02rem;
+    font-size: 1.05rem;
     font-weight: 700;
     letter-spacing: -0.01em;
     color: currentColor;

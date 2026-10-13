@@ -9,9 +9,9 @@ import { serviceAreas } from '../data/service-areas';
 import { business } from '../data/business';
 import { IMAGES } from '../data/images';
 
-const title = 'Service Areas — Brampton & the GTA | GTA Appliance Repair';
+const title = 'Service Areas — Brampton & the GTA | PAS Appliance Repair';
 const description =
-  'GTA Appliance Repair is based in Brampton and serves selected surrounding GTA communities. See where we work and how coverage is confirmed when you request service.';
+  'PAS Appliance Repair is based in Brampton and serves selected surrounding GTA communities. See where we work and how coverage is confirmed when you request service.';
 ---
 
 <BaseLayout title={title} description={description} ogImage={IMAGES.kitchen}>
@@ -38,6 +38,21 @@ const description =
           </li>
         ))}
       </ul>
+
+      <div class="area-map">
+        <iframe
+          class="area-map__frame"
+          title="Google map of the Brampton and Greater Toronto Area service region"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d132171.71934096635!2d-79.82131036046641!3d43.68151501525881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2c69e1d804e014ff%3A0x3b7760d2534ece91!2sPAS%20appliance%20repair!5e0!3m2!1sen!2sin!4v1791900842823!5m2!1sen!2sin"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+        <p class="area-map__note">
+          Showing the wider Brampton area. Coverage for your specific address is confirmed when you
+          request service.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -106,6 +121,25 @@ const description =
   .area-grid svg {
     flex: none;
     color: var(--color-primary);
+  }
+
+  .area-map {
+    margin-top: var(--space-6);
+  }
+
+  .area-map__frame {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border: 0;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .area-map__note {
+    margin: var(--space-3) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
   }
 
   .coverage-panel {

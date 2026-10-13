@@ -8,11 +8,14 @@ interface Props {
   /** Optionally preselect an appliance type (e.g. when arriving from a service page). */
   preselectedAppliance?: string;
   heading?: string;
+  /** Trimmed-down variant for tight placements such as the home hero. */
+  compact?: boolean;
 }
 
 const {
   preselectedAppliance,
   heading = 'Request a repair',
+  compact = false,
 } = Astro.props;
 
 const fields: Array<{
@@ -38,18 +41,23 @@ const windows = [
 ];
 
 const selected = preselectedAppliance ?? '';
+
+// The compact variant drops the optional email field for a lighter form.
+const visibleFields = compact ? fields.filter((f) => f.name !== 'email') : fields;
 ---
 
-<section class="booking" aria-labelledby="booking-title">
+<section class:list={['booking', { 'booking--compact': compact }]} aria-labelledby="booking-title">
   <div class="booking__head">
     <h2 id="booking-title">{heading}</h2>
-    <p>
-      Describe the problem in your own words — no technical diagnosis or model number required.
-    </p>
+    {!compact && (
+      <p>
+        Describe the problem in your own words — no technical diagnosis or model number required.
+      </p>
+    )}
   </div>
 
   <form id="booking-form" class="booking__form" novalidate>
-    {fields.map((f) => (
+    {visibleFields.map((f) => (
       <div class="field">
         <label for={`field-${f.name}`}>
           {f.label}
@@ -83,16 +91,18 @@ const selected = preselectedAppliance ?? '';
       <p class="field__error" id="error-applianceType" hidden></p>
     </div>
 
-    <div class="field field--wide">
-      <label for="field-window">Preferred appointment window <span class="opt">(optional)</span></label>
-      <select id="field-window" name="preferredWindow">
-        {windows.map((o) => (
-          <option value={o.value}>{o.label}</option>
-        ))}
-      </select>
-      <p class="field__hint">A preference only — the time is always confirmed with you before any visit.</p>
-      <p class="field__error" id="error-preferredWindow" hidden></p>
-    </div>
+    {!compact && (
+      <div class="field field--wide">
+        <label for="field-window">Preferred appointment window <span class="opt">(optional)</span></label>
+        <select id="field-window" name="preferredWindow">
+          {windows.map((o) => (
+            <option value={o.value}>{o.label}</option>
+          ))}
+        </select>
+        <p class="field__hint">A preference only — the time is always confirmed with you before any visit.</p>
+        <p class="field__error" id="error-preferredWindow" hidden></p>
+      </div>
+    )}
 
     <div class="field field--wide">
       <label for="field-description">
@@ -101,7 +111,7 @@ const selected = preselectedAppliance ?? '';
       <textarea
         id="field-description"
         name="description"
-        rows={4}
+        rows={compact ? 3 : 4}
         placeholder="e.g. The fridge is running but not cooling, and I noticed water pooling underneath."
         aria-required="true"
         aria-describedby="error-description hint-description"
@@ -126,24 +136,28 @@ const selected = preselectedAppliance ?? '';
     </p>
   </div>
 
-  <div class="booking__alt">
-    <p>Prefer to talk it through?</p>
-    <Button
-      href={business.phone.href}
-      variant="secondary"
-      icon="phone-call"
-    >
-      {business.cta.secondary}
-    </Button>
-  </div>
+  {!compact && (
+    <div class="booking__alt">
+      <p>Prefer to talk it through?</p>
+      <Button
+        href={business.phone.href}
+        variant="secondary"
+        icon="phone-call"
+      >
+        {business.cta.secondary}
+      </Button>
+    </div>
+  )}
 
-  <p class="booking__privacy">
-    <Icon name="lock" size={15} aria-hidden="true" />
-    <span>
-      <strong>Privacy note.</strong> The contact details you provide are used only to respond to your
-      request and arrange service, and are never shared for marketing.
-    </span>
-  </p>
+  {!compact && (
+    <p class="booking__privacy">
+      <Icon name="lock" size={15} aria-hidden="true" />
+      <span>
+        <strong>Privacy note.</strong> The contact details you provide are used only to respond to your
+        request and arrange service, and are never shared for marketing.
+      </span>
+    </p>
+  )}
 </section>
 
 <script>
@@ -273,6 +287,17 @@ const selected = preselectedAppliance ?? '';
     .field--wide {
       grid-column: 1 / -1;
     }
+  }
+
+  /* Compact: always a single, tighter column (e.g. the home hero card). */
+  .booking--compact .booking__form {
+    margin-top: var(--space-4);
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .booking--compact .booking__head h2 {
+    font-size: var(--font-size-h3);
   }
 
   .field {

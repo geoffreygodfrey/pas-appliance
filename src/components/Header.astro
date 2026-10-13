@@ -26,7 +26,7 @@ const phone = business.phone;
 <header class="site-header">
   <div class="header-inner container">
     <a href="/" class="logo-link" aria-label={`${business.name} — home`}>
-      <Logo />
+      <Logo variant="dark" height="3rem" />
     </a>
 
     <nav class="nav-desktop" aria-label="Primary">
@@ -64,7 +64,7 @@ const phone = business.phone;
         data-menu-toggle
       >
         <span class="visually-hidden">Menu</span>
-        <Icon name="menu" size={26} data-menu-open-icon />
+        <Icon name="menu" size={26} class="menu-toggle__open" data-menu-open-icon />
         <Icon name="x" size={26} data-menu-close-icon class="menu-toggle__x" />
       </button>
     </div>
@@ -84,16 +84,11 @@ const phone = business.phone;
   if (header) {
     const menuToggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
     const menu = document.getElementById('mobile-menu');
-    const menuOpenIcon = header.querySelector('[data-menu-open-icon]');
-    const menuCloseIcon = header.querySelector('[data-menu-close-icon]');
-
     const setMenuOpen = (open: boolean) => {
-      if (!menu || !menuToggle || !menuOpenIcon || !menuCloseIcon) return;
+      if (!menu || !menuToggle) return;
       menuToggle.setAttribute('aria-expanded', String(open));
       menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
       menu.classList.toggle('is-open', open);
-      (menuOpenIcon as HTMLElement).style.display = open ? 'none' : '';
-      (menuCloseIcon as HTMLElement).style.display = open ? '' : 'none';
       if (open) {
         menu.querySelector<HTMLElement>('a')?.focus();
       } else {
@@ -128,8 +123,8 @@ const phone = business.phone;
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--color-white);
-    border-bottom: 1px solid var(--color-border);
+    background: var(--color-black);
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
   }
 
   .header-inner {
@@ -164,7 +159,7 @@ const phone = business.phone;
     align-items: center;
     padding: 0.5rem 0.65rem;
     border-radius: var(--radius-md);
-    color: var(--color-body);
+    color: rgb(255 255 255 / 0.85);
     font-weight: 550;
     font-size: 0.9375rem;
     line-height: 1.2;
@@ -174,13 +169,13 @@ const phone = business.phone;
   }
 
   .nav-link:hover {
-    color: var(--color-primary);
-    background: var(--color-primary-soft);
+    color: var(--color-white);
+    background: rgb(255 255 255 / 0.12);
   }
 
   .nav-link.is-active {
-    color: var(--color-primary);
-    background: var(--color-primary-soft);
+    color: var(--color-white);
+    background: rgb(255 255 255 / 0.14);
   }
 
   .header-actions {
@@ -197,14 +192,14 @@ const phone = business.phone;
     height: 2.75rem;
     padding-inline: 0.6rem;
     border-radius: var(--radius-md);
-    color: var(--color-navy);
+    color: var(--color-white);
     font-weight: 650;
     text-decoration: none;
     white-space: nowrap;
   }
 
   .phone-link:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-border);
   }
 
   .phone-link svg {
@@ -222,23 +217,26 @@ const phone = business.phone;
     width: 2.75rem;
     height: 2.75rem;
     padding: 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid rgb(255 255 255 / 0.3);
     border-radius: var(--radius-md);
-    background: var(--color-white);
-    color: var(--color-navy);
+    background: transparent;
+    color: var(--color-white);
     cursor: pointer;
   }
 
-  .menu-toggle svg {
+  /* Exactly one icon is shown: three bars when closed, an X when expanded.
+     Selectors are class-based (no `svg` type) so they outrank the base rule. */
+  .menu-toggle__open,
+  .menu-toggle__x {
     display: none;
   }
 
-  .menu-toggle svg:first-child {
+  .menu-toggle:not([aria-expanded='true']) .menu-toggle__open {
     display: block;
   }
 
-  .menu-toggle__x {
-    display: none;
+  .menu-toggle[aria-expanded='true'] .menu-toggle__x {
+    display: block;
   }
 
   /* Keep the header Book button from crowding the logo on tiny screens. */

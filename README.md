@@ -1,4 +1,4 @@
-# GTA Appliance Repair — website
+# PAS Appliance Repair — website
 
 A conversion-focused, multi-page marketing site for an appliance-repair business
 based in **Brampton, Ontario** and serving Brampton and surrounding communities
@@ -46,7 +46,7 @@ PUBLIC_SITE_URL=https://your-domain.example
 - `src/data/business.ts` reads `PUBLIC_SITE_URL` for canonical/OG tags and
   JSON-LD (Astro only exposes `PUBLIC_`-prefixed vars to page code).
 
-Default: `https://gta-appliance-repair.example.com`.
+Default: `https://pas-appliance-repair.example.com`.
 
 ---
 

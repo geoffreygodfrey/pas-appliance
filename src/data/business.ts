@@ -16,11 +16,16 @@ export interface ReviewItem {
   text: string;
   /** Optional relative date, e.g. "2 months ago". */
   relativeDate?: string;
+  /**
+   * Optional reviewer profile photo URL (e.g. the Google profile image).
+   * When omitted, the site shows a monogram avatar built from the name.
+   */
+  avatar?: string;
 }
 
 export const business = {
   /** Business name shown throughout the site. */
-  name: 'GTA Appliance Repair',
+  name: 'PAS Appliance Repair',
 
   /** Where the business is based. */
   base: 'Brampton, Ontario',
@@ -38,12 +43,18 @@ export const business = {
    * default. Set the same value in astro.config.mjs for the sitemap.
    */
   siteUrl:
-    import.meta.env.PUBLIC_SITE_URL ?? 'https://gta-appliance-repair.example.com',
+    import.meta.env.PUBLIC_SITE_URL ?? 'https://pas-appliance-repair.example.com',
 
   /** Contact details. The phone number is the single source of truth. */
   phone: {
     display: '(437) 992-3243',
     href: 'tel:+14379923243',
+  },
+
+  /** Email contact. */
+  email: {
+    display: 'pasappliancerepairs@gmail.com',
+    href: 'mailto:pasappliancerepairs@gmail.com',
   },
 
   /**
@@ -52,9 +63,46 @@ export const business = {
    */
   reviews: {
     /** Google Business Profile / reviews URL. Add when supplied. */
-    profileUrl: null as string | null,
+    profileUrl: 'https://maps.app.goo.gl/aAqkCundMWtZCUJC6' as string | null,
     /** Real review excerpts. Add when supplied by the business. */
-    items: [] as ReviewItem[],
+    items: [
+      {
+        author: 'Tushar Luthra',
+        rating: 5,
+        text: "They've helped me with the repair of my dishwasher and undoubtedly they are very professional and knowledgeable. It didn't take them long to identify the problem and their charges were nominal too.",
+        relativeDate: 'a month ago',
+      },
+      {
+        author: 'Erkhes Bayan',
+        rating: 5,
+        text: 'Great fast service! Akash is a real professional!',
+        relativeDate: 'a week ago',
+      },
+      {
+        author: 'Gurpreet Singh',
+        rating: 5,
+        text: 'Great job done with my dryer Thank you 🙏',
+        relativeDate: 'a week ago',
+      },
+      {
+        author: 'Inderdeep Kalra',
+        rating: 5,
+        text: 'I had my washer and dryer serviced today and was happy with the experience. The technician was professional, explained the work clearly, and took the time to answer my questions. I appreciate the service and would recommend them.',
+        relativeDate: '2 weeks ago',
+      },
+      {
+        author: 'tanmay',
+        rating: 5,
+        text: 'Great service quick in and out with reasonable charge. I call for my rental property and with smooth service and transection done without even meeting technician. 🙏🙏Great and friendly service🙏🙏',
+        relativeDate: '3 weeks ago',
+      },
+    ] as ReviewItem[],
+  },
+
+  /** Social profiles. */
+  social: {
+    instagram: 'https://www.instagram.com/pas_appliance/',
+    facebook: 'https://www.facebook.com/p/PAS-Appliance-repair-61593736977810/',
   },
 
   /** Consistent CTA wording used across the site. */

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import BookingForm from '../components/BookingForm.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ServiceGrid from '../components/ServiceGrid.astro';
 import TrustSection from '../components/TrustSection.astro';
@@ -14,7 +15,7 @@ import { generalFaqs } from '../data/faqs';
 import { IMAGES } from '../data/images';
 import type { IconName } from '../lib/icons';
 
-const title = 'Appliance Repair in Brampton & the GTA | GTA Appliance Repair';
+const title = 'Appliance Repair in Brampton & the GTA | PAS Appliance Repair';
 const description =
   'Fridge, washer, dryer, stove and dishwasher repair for Brampton and the GTA. Describe the problem in your own words and request service — coverage and fees confirmed before any work.';
 
@@ -27,13 +28,16 @@ const heroPoints: Array<{ icon: IconName; text: string }> = [
 
 <BaseLayout title={title} description={description} ogImage={IMAGES.heroTechnician}>
   <Hero
+    bg="blue"
     kicker="Appliance repair in Brampton & the GTA"
     title="Appliance Repair in Brampton & Across the GTA"
     subtitle="Need your fridge, washer, dryer, stove or dishwasher repaired? Tell us what's wrong and request service in your area."
-    image={IMAGES.heroTechnician}
-    imagePriority={true}
     points={heroPoints}
-  />
+  >
+    <div slot="media" class="hero-form-card">
+      <BookingForm compact />
+    </div>
+  </Hero>
 
   <section class="section">
     <div class="container">
@@ -49,11 +53,11 @@ const heroPoints: Array<{ icon: IconName; text: string }> = [
     intro="Know what to expect when you request appliance repair — from explaining the problem to discussing the estimate."
   />
 
+  <ReviewSection />
+
   <RepairProcess />
 
   <PricingTransparency />
-
-  <ReviewSection />
 
   <ServiceAreaSection />
 
@@ -61,3 +65,19 @@ const heroPoints: Array<{ icon: IconName; text: string }> = [
 
   <FinalCTA />
 </BaseLayout>
+
+<style>
+  /* Home hero lead form sits in the hero's right column as a white card. */
+  .hero-form-card {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-lg);
+  }
+
+  @media (min-width: 48rem) {
+    .hero-form-card {
+      padding: var(--space-6);
+    }
+  }
+</style>

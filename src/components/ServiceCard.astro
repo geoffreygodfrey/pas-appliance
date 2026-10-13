@@ -20,14 +20,28 @@ const icons: Record<Service['id'], IconName> = {
 ---
 
 <a class="service-card" href={`/${service.slug}/`}>
-  <span class="service-card__icon" aria-hidden="true">
-    <Icon name={icons[service.id]} size={26} strokeWidth={1.8} />
-  </span>
-  <h3>{service.cardTitle}</h3>
-  <p>{service.cardCopy}</p>
-  <span class="service-card__link">
-    Learn more
-    <Icon name="arrow-right" size={16} aria-hidden="true" />
+  {service.cardImage && (
+    <span class="service-card__media" aria-hidden="true">
+      <img
+        src={service.cardImage}
+        alt=""
+        width="900"
+        height="675"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+  )}
+  <span class="service-card__body">
+    <span class="service-card__icon" aria-hidden="true">
+      <Icon name={icons[service.id]} size={26} strokeWidth={1.8} />
+    </span>
+    <h3>{service.cardTitle}</h3>
+    <p>{service.cardCopy}</p>
+    <span class="service-card__link">
+      Learn more
+      <Icon name="arrow-right" size={16} aria-hidden="true" />
+    </span>
   </span>
 </a>
 
@@ -35,13 +49,12 @@ const icons: Record<Service['id'], IconName> = {
   .service-card {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--space-5);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     background: var(--color-white);
     text-decoration: none;
     color: var(--color-body);
+    overflow: hidden;
     transition:
       border-color var(--ease-fast),
       box-shadow var(--ease-fast),
@@ -57,6 +70,26 @@ const icons: Record<Service['id'], IconName> = {
   .service-card:hover h3,
   .service-card:hover .service-card__link {
     color: var(--color-primary);
+  }
+
+  .service-card__media {
+    display: block;
+    aspect-ratio: 4 / 3;
+    background: var(--color-bg-soft);
+  }
+
+  .service-card__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .service-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
   }
 
   .service-card__icon {

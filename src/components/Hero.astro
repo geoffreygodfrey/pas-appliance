@@ -15,10 +15,10 @@ interface Props {
   kicker?: string;
   title: string;
   subtitle?: string;
-  image?: ImageAsset;
+  image?: ImageAsset | null;
   /** Priority of the hero image for LCP. */
   imagePriority?: boolean;
-  bg?: 'light' | 'navy';
+  bg?: 'light' | 'navy' | 'blue';
   /** Display aspect ratio for the hero image, e.g. "4 / 3". */
   imageAspect?: string;
   /** Compact trust points shown in a row beneath the CTAs. */
@@ -50,26 +50,42 @@ const {
 } = Astro.props;
 
 const isNavy = bg === 'navy';
-const imageSrc = image ?? IMAGES.heroTechnician;
-const aspect = imageAspect ?? (isNavy ? '3 / 2' : '4 / 3');
+const isBlue = bg === 'blue';
+const isDark = isNavy || isBlue;
+const imageSrc = image === null ? undefined : (image ?? IMAGES.heroTechnician);
+const aspect = imageAspect ?? (isDark ? '3 / 2' : '4 / 3');
+// The right column holds a custom "media" slot when provided (e.g. a form),
+// otherwise the hero image, otherwise nothing.
+const hasMediaSlot = Astro.slots.has('media');
+const hasMedia = hasMediaSlot || Boolean(imageSrc);
 ---
 
-<section class={['hero', isNavy ? 'hero--navy' : 'hero--light', className].filter(Boolean).join(' ')}>
+<section
+  class={[
+    'hero',
+    isNavy ? 'hero--navy' : isBlue ? 'hero--blue' : 'hero--light',
+    isDark ? 'hero--dark' : '',
+    hasMedia ? '' : 'hero--no-media',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')}
+>
   <div class="container hero__grid">
     <div class="hero__copy">
       {kicker && (
-        <p class={['hero__kicker', isNavy ? 'hero__kicker--light' : ''].join(' ')}>{kicker}</p>
+        <p class={['hero__kicker', isDark ? 'hero__kicker--light' : ''].join(' ')}>{kicker}</p>
       )}
       <h1>{title}</h1>
       {subtitle && <p class="hero__subtitle">{subtitle}</p>}
 
       <div class="hero__actions">
-        <Button href={primaryHref} variant={isNavy ? 'light' : 'primary'} size="lg" iconRight="arrow-right">
+        <Button href={primaryHref} variant={isDark ? 'light' : 'primary'} size="lg" iconRight="arrow-right">
           {primaryLabel}
         </Button>
         <Button
           href={secondaryHref}
-          variant={isNavy ? 'ghost-light' : 'secondary'}
+          variant={isDark ? 'ghost-light' : 'secondary'}
           size="lg"
           icon="phone-call"
         >
@@ -92,16 +108,20 @@ const aspect = imageAspect ?? (isNavy ? '3 / 2' : '4 / 3');
       <slot />
     </div>
 
-    {imageSrc && (
-      <div class="hero__media" aria-hidden={image ? undefined : 'true'}>
-        <ApplianceImage
-          asset={imageSrc}
-          aspect={aspect}
-          loading={imagePriority ? 'eager' : 'lazy'}
-          fetchpriority={imagePriority ? 'high' : 'auto'}
-          widths={[480, 768, 1080]}
-          sizes="(min-width: 76rem) 620px, (min-width: 48rem) 48vw, 100vw"
-        />
+    {hasMedia && (
+      <div class="hero__media" aria-hidden={!hasMediaSlot && !image ? 'true' : undefined}>
+        {hasMediaSlot ? (
+          <slot name="media" />
+        ) : (
+          <ApplianceImage
+            asset={imageSrc}
+            aspect={aspect}
+            loading={imagePriority ? 'eager' : 'lazy'}
+            fetchpriority={imagePriority ? 'high' : 'auto'}
+            widths={[480, 768, 1080]}
+            sizes="(min-width: 76rem) 620px, (min-width: 48rem) 48vw, 100vw"
+          />
+        )}
       </div>
     )}
   </div>
@@ -115,10 +135,17 @@ const aspect = imageAspect ?? (isNavy ? '3 / 2' : '4 / 3');
 
   .hero--navy {
     background: var(--color-navy);
+  }
+
+  .hero--blue {
+    background: var(--color-blue-dark);
+  }
+
+  .hero--dark {
     color: rgb(255 255 255 / 0.88);
   }
 
-  .hero--navy h1 {
+  .hero--dark h1 {
     color: var(--color-white);
   }
 
@@ -155,7 +182,7 @@ const aspect = imageAspect ?? (isNavy ? '3 / 2' : '4 / 3');
     max-width: 54ch;
   }
 
-  .hero--navy .hero__subtitle {
+  .hero--dark .hero__subtitle {
     color: rgb(255 255 255 / 0.78);
   }
 
@@ -189,11 +216,11 @@ const aspect = imageAspect ?? (isNavy ? '3 / 2' : '4 / 3');
     color: var(--color-primary);
   }
 
-  .hero--navy .hero__points li {
+  .hero--dark .hero__points li {
     color: rgb(255 255 255 / 0.85);
   }
 
-  .hero--navy .hero__points svg {
+  .hero--dark .hero__points svg {
     color: #7cb2ff;
   }
 
@@ -204,7 +231,7 @@ const aspect = imageAspect ?? (isNavy ? '3 / 2' : '4 / 3');
     max-width: 52ch;
   }
 
-  .hero--navy .hero__meta {
+  .hero--dark .hero__meta {
     color: rgb(255 255 255 / 0.65);
   }
 
@@ -221,6 +248,17 @@ const aspect = imageAspect ?? (isNavy ? '3 / 2' : '4 / 3');
     .hero__grid {
       grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.92fr);
       gap: var(--space-8);
+    }
+  }
+
+  /* No image: keep the copy full-width instead of a lopsided grid. */
+  @media (min-width: 48rem) {
+    .hero--no-media .hero__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero--no-media .hero__copy h1 {
+      max-width: none;
     }
   }
 </style>

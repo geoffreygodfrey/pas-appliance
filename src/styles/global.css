@@ -11,6 +11,12 @@
   box-sizing: border-box;
 }
 
+/* Keep the HTML `hidden` attribute authoritative even when a component sets
+   an explicit `display` value (which would otherwise reveal it). */
+[hidden] {
+  display: none !important;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;

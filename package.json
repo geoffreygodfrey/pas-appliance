@@ -1,9 +1,9 @@
 {
-  "name": "gta-appliance-repair",
+  "name": "pas-appliance-repair",
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "description": "Conversion-focused appliance repair website for GTA Appliance Repair, based in Brampton, Ontario. Astro project.",
+  "description": "Conversion-focused appliance repair website for PAS Appliance Repair, based in Brampton, Ontario. Astro project.",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
