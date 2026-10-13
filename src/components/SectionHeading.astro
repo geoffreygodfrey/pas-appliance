@@ -1,0 +1,45 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  /** Optional supporting copy below the title. */
+  lede?: string;
+  /** Visually right-aligned / compact layout for side panels. */
+  align?: 'left' | 'center';
+  class?: string;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  align = 'left',
+  class: className = '',
+  headingLevel = 'h2',
+} = Astro.props;
+
+const Tag = headingLevel;
+const classes = ['section-head', align === 'center' ? 'section-head--center' : '', className]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<div class={classes}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Tag>{title}</Tag>
+  {lede && <p class="lede">{lede}</p>}
+</div>
+
+<style>
+  .section-head--center {
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .lede {
+    color: var(--color-muted);
+    margin-bottom: 0;
+  }
+</style>

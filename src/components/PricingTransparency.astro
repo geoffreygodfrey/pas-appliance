@@ -1,0 +1,107 @@
+---
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import { business } from '../data/business';
+
+interface Props {
+  heading?: string;
+  lede?: string;
+}
+const { heading = 'Straightforward about fees', lede } = Astro.props;
+---
+
+<section class="section pricing">
+  <div class="container pricing__grid">
+    <div class="pricing__copy">
+      <SectionHeading
+        eyebrow="Pricing & estimates"
+        title={heading}
+        lede={
+          lede ??
+          'The applicable diagnostic process, any related fees and the repair estimate are explained and confirmed with you before repair work proceeds.'
+        }
+      />
+      <ul class="check-list">
+        <li>
+          <Icon name="circle-check-big" size={20} aria-hidden="true" />
+          No repair is started without your authorization
+        </li>
+        <li>
+          <Icon name="circle-check-big" size={20} aria-hidden="true" />
+          Fees and estimates are discussed before any work
+        </li>
+      </ul>
+      <p class="pricing__note">
+        <Icon name="info" size={16} aria-hidden="true" />
+        Contact us to discuss the current diagnostic fee and how it applies to your repair.
+      </p>
+    </div>
+
+    <div class="pricing__cta">
+      <p class="pricing__cta-title">Ready to get started?</p>
+      <Button
+        href="/book-repair/"
+        size="lg"
+        iconRight="arrow-right"
+        ariaLabel={business.cta.primary}
+      >
+        {business.cta.primary}
+      </Button>
+      <span class="pricing__sub">We’ll confirm fees and next steps when we reply.</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pricing__grid {
+    display: grid;
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  .pricing__note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin: var(--space-5) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: var(--leading-snug);
+  }
+
+  .pricing__note svg {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--color-primary);
+  }
+
+  .pricing__cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-soft);
+  }
+
+  .pricing__cta-title {
+    margin: 0;
+    font-weight: 650;
+    color: var(--color-navy);
+  }
+
+  .pricing__sub {
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .pricing__grid {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--space-8);
+      align-items: center;
+    }
+  }
+</style>

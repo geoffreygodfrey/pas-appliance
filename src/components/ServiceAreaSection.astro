@@ -1,0 +1,107 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import { serviceAreas } from '../data/service-areas';
+import { business } from '../data/business';
+
+interface Props {
+  heading?: string;
+  lede?: string;
+}
+
+const {
+  heading = 'Appliance Repair in Brampton & Surrounding GTA Communities',
+  lede = 'We serve Brampton and selected communities across the Greater Toronto Area. Contact us to confirm coverage for your location.',
+} = Astro.props;
+---
+
+<section class="section">
+  <div class="container">
+    <SectionHeading eyebrow="Service coverage" title={heading} lede={lede} />
+
+    <ul class="areas-grid">
+      {serviceAreas.map((area) => (
+        <li>
+          <Icon name="map-pin" size={18} aria-hidden="true" />
+          {area.name}
+        </li>
+      ))}
+    </ul>
+
+    <p class="areas-note">
+      <Icon name="info" size={16} aria-hidden="true" />
+      This list is provisional coverage. We confirm availability for your specific address before
+      arranging a visit.
+    </p>
+
+    <div class="areas-actions">
+      <Button href="/service-areas/" variant="secondary" iconRight="arrow-right">
+        See service areas
+      </Button>
+      <Button href={business.phone.href} variant="secondary" icon="phone-call">
+        {business.cta.secondary}
+      </Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .areas-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-4);
+  }
+
+  .areas-grid li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 600;
+    color: var(--color-navy);
+  }
+
+  .areas-grid svg {
+    flex: none;
+    color: var(--color-primary);
+  }
+
+  .areas-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin: var(--space-5) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: var(--leading-snug);
+    max-width: 62ch;
+  }
+
+  .areas-note svg {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--color-primary);
+  }
+
+  .areas-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  @media (min-width: 40rem) {
+    .areas-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .areas-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

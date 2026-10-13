@@ -1,0 +1,184 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import { business } from '../data/business';
+
+const { profileUrl, items } = business.reviews;
+const hasReviews = items.length > 0;
+const heading = 'Trusted by local customers';
+const lede = 'See what customers have to say about their appliance repair experience.';
+---
+
+<section class="section section-soft">
+  <div class="container">
+    <SectionHeading eyebrow="Reviews" title={heading} lede={lede} />
+
+    {hasReviews ? (
+      <div class="review-layout">
+        <ul class="review-list">
+          {items.slice(0, 3).map((review) => (
+            <li class="review-item">
+              <div
+                class="review-item__stars"
+                aria-label={`${review.rating} out of 5 stars`}
+              >
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Icon
+                    name="star"
+                    size={16}
+                    class={index < review.rating ? 'star is-on' : 'star'}
+                  />
+                ))}
+              </div>
+              <blockquote>{review.text}</blockquote>
+              <p class="review-item__author">
+                {review.author}
+                {review.relativeDate && <span> · {review.relativeDate}</span>}
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        {profileUrl && (
+          <div class="review-actions">
+            <Button
+              href={profileUrl}
+              variant="secondary"
+              icon="external-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Read reviews on Google
+            </Button>
+          </div>
+        )}
+      </div>
+    ) : (
+      <div class="review-placeholder">
+        <span class="review-placeholder__icon" aria-hidden="true">
+          <Icon name="star" size={22} />
+        </span>
+        <p class="review-placeholder__label">Placeholder — verified Google reviews</p>
+        <p class="review-placeholder__copy">
+          We’re gathering genuine customer feedback for GTA Appliance Repair. Real Google review
+          excerpts — with reviewer names and ratings — will be published here once supplied.
+        </p>
+        {profileUrl ? (
+          <Button
+            href={profileUrl}
+            variant="secondary"
+            icon="external-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read reviews on Google
+          </Button>
+        ) : (
+          <p class="review-placeholder__note">
+            A link to our Google Business Profile will be added when it’s available.
+          </p>
+        )}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .review-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .review-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .review-item__stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--color-border-strong);
+  }
+
+  .review-item__stars .is-on {
+    color: #f59e0b;
+    fill: currentColor;
+  }
+
+  .review-item blockquote {
+    margin: 0;
+    color: var(--color-body);
+    line-height: var(--leading-body);
+  }
+
+  .review-item__author {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 650;
+    color: var(--color-navy);
+  }
+
+  .review-actions {
+    margin-top: var(--space-5);
+  }
+
+  .review-placeholder {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    background: var(--color-white);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    max-width: var(--container-narrow);
+  }
+
+  .review-placeholder__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  .review-placeholder__label {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .review-placeholder__copy {
+    margin: 0;
+    color: var(--color-body);
+    line-height: var(--leading-body);
+    max-width: 60ch;
+  }
+
+  .review-placeholder__note {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .review-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

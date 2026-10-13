@@ -1,0 +1,96 @@
+---
+import SectionHeading from './SectionHeading.astro';
+
+const steps = [
+  {
+    n: '01',
+    title: 'Tell us which appliance needs attention',
+    copy: 'Choose the appliance in the request form — fridge, washer, dryer, stove or dishwasher — and describe the problem in your own words. No technical diagnosis needed.',
+  },
+  {
+    n: '02',
+    title: 'Discuss service availability & diagnosis',
+    copy: 'We confirm coverage for your area, discuss the diagnostic process and any applicable fees, and arrange a time that works for you.',
+  },
+  {
+    n: '03',
+    title: 'Review the estimate & authorize the repair',
+    copy: 'Before any repair work proceeds, the estimate is reviewed and agreed with you. You decide — nothing is done without your approval.',
+  },
+];
+---
+
+<section class="section">
+  <div class="container">
+    <SectionHeading
+      eyebrow="How it works"
+      title="A simple, transparent repair process"
+      lede="From describing the problem to approving the repair — a straightforward three-step flow, with the details confirmed by phone."
+    />
+    <ol class="process-list">
+      {steps.map((step) => (
+        <li>
+          <span class="process-list__num" aria-hidden="true">{step.n}</span>
+          <div class="process-list__body">
+            <h3>{step.title}</h3>
+            <p>{step.copy}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .process-list li {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .process-list__num {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+  }
+
+  .process-list__body h3 {
+    margin-bottom: var(--space-2);
+    font-size: 1.125rem;
+  }
+
+  .process-list p {
+    margin: 0;
+    font-size: var(--font-size-body);
+    color: var(--color-muted);
+    line-height: var(--leading-body);
+  }
+
+  @media (min-width: 48rem) {
+    .process-list {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-8);
+    }
+
+    .process-list li {
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+  }
+</style>

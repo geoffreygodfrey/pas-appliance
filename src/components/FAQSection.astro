@@ -1,0 +1,95 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+import type { Faq } from '../data/faqs';
+
+interface Props {
+  faqs: Faq[];
+  heading?: string;
+  lede?: string;
+}
+
+const { faqs, heading = 'Frequently asked questions', lede } = Astro.props;
+---
+
+<section class="section section-soft">
+  <div class="container container-tight">
+    <SectionHeading
+      eyebrow="Questions"
+      title={heading}
+      lede={
+        lede ??
+        'Common questions about requesting appliance repair service and what happens next.'
+      }
+    />
+    <div class="faq-list">
+      {faqs.map((f, i) => (
+        <details class="faq-item" {...(i === 0 ? { open: true } : {})}>
+          <summary>
+            {f.question}
+            <Icon name="chevron-down" size={18} aria-hidden="true" />
+          </summary>
+          <p>{f.answer}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .faq-item {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .faq-item[open] {
+    border-color: var(--color-primary-border);
+  }
+
+  .faq-item summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    cursor: pointer;
+    font-weight: 650;
+    color: var(--color-navy);
+    font-size: 1.05rem;
+    line-height: var(--leading-snug);
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary:hover {
+    color: var(--color-primary);
+  }
+
+  .faq-item summary svg {
+    flex: none;
+    color: var(--color-primary);
+    transition: transform var(--ease-base);
+  }
+
+  .faq-item[open] summary svg {
+    transform: rotate(180deg);
+  }
+
+  .faq-item p {
+    margin: 0;
+    padding: 0 var(--space-5) var(--space-5);
+    font-size: var(--font-size-body);
+    color: var(--color-body);
+    line-height: var(--leading-body);
+  }
+</style>

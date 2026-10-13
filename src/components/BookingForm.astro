@@ -1,0 +1,412 @@
+---
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import { business } from '../data/business';
+import { applianceOptions } from '../data/services';
+
+interface Props {
+  /** Optionally preselect an appliance type (e.g. when arriving from a service page). */
+  preselectedAppliance?: string;
+  heading?: string;
+}
+
+const {
+  preselectedAppliance,
+  heading = 'Request a repair',
+} = Astro.props;
+
+const fields: Array<{
+  name: 'name' | 'phone' | 'email' | 'city';
+  label: string;
+  type: 'text' | 'tel' | 'email';
+  required: boolean;
+  autocomplete: string;
+  placeholder: string;
+}> = [
+  { name: 'name', label: 'Name', type: 'text', required: true, autocomplete: 'name', placeholder: 'Jane Smith' },
+  { name: 'phone', label: 'Phone number', type: 'tel', required: true, autocomplete: 'tel', placeholder: '(437) 555-0100' },
+  { name: 'email', label: 'Email (optional)', type: 'email', required: false, autocomplete: 'email', placeholder: 'you@example.com' },
+  { name: 'city', label: 'City or postal code', type: 'text', required: true, autocomplete: 'address-level2', placeholder: 'Brampton or L6Y 0A1' },
+];
+
+const windows = [
+  { value: '', label: 'No preference' },
+  { value: 'morning', label: 'Morning' },
+  { value: 'afternoon', label: 'Afternoon' },
+  { value: 'early-evening', label: 'Early evening' },
+  { value: 'weekend', label: 'Weekend' },
+];
+
+const selected = preselectedAppliance ?? '';
+---
+
+<section class="booking" aria-labelledby="booking-title">
+  <div class="booking__head">
+    <h2 id="booking-title">{heading}</h2>
+    <p>
+      Describe the problem in your own words — no technical diagnosis or model number required.
+    </p>
+  </div>
+
+  <form id="booking-form" class="booking__form" novalidate>
+    {fields.map((f) => (
+      <div class="field">
+        <label for={`field-${f.name}`}>
+          {f.label}
+          {f.required && <span class="req" aria-hidden="true">*</span>}
+        </label>
+        <input
+          id={`field-${f.name}`}
+          name={f.name}
+          type={f.type}
+          autocomplete={f.autocomplete}
+          placeholder={f.placeholder}
+          inputmode={f.type === 'tel' ? 'tel' : undefined}
+          aria-required={f.required}
+          aria-describedby={`error-${f.name}`}
+        />
+        <p class="field__error" id={`error-${f.name}`} hidden></p>
+      </div>
+    ))}
+
+    <div class="field">
+      <label for="field-appliance">
+        Appliance type <span class="req" aria-hidden="true">*</span>
+      </label>
+      <select id="field-appliance" name="applianceType" aria-required="true" aria-describedby="error-applianceType">
+        {applianceOptions.map((o) => (
+          <option value={o.value} selected={o.value === selected}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <p class="field__error" id="error-applianceType" hidden></p>
+    </div>
+
+    <div class="field field--wide">
+      <label for="field-window">Preferred appointment window <span class="opt">(optional)</span></label>
+      <select id="field-window" name="preferredWindow">
+        {windows.map((o) => (
+          <option value={o.value}>{o.label}</option>
+        ))}
+      </select>
+      <p class="field__hint">A preference only — the time is always confirmed with you before any visit.</p>
+      <p class="field__error" id="error-preferredWindow" hidden></p>
+    </div>
+
+    <div class="field field--wide">
+      <label for="field-description">
+        What is the appliance doing? <span class="req" aria-hidden="true">*</span>
+      </label>
+      <textarea
+        id="field-description"
+        name="description"
+        rows={4}
+        placeholder="e.g. The fridge is running but not cooling, and I noticed water pooling underneath."
+        aria-required="true"
+        aria-describedby="error-description hint-description"
+      ></textarea>
+      <p class="field__hint" id="hint-description">Describe what’s happening in your own words.</p>
+      <p class="field__error" id="error-description" hidden></p>
+    </div>
+
+    <div class="field field--wide">
+      <Button buttonType="submit" size="lg" icon="send" block>Submit request</Button>
+    </div>
+  </form>
+
+  <div id="booking-success" class="booking__success" role="status" aria-live="polite" hidden>
+    <span class="booking__success-icon" aria-hidden="true">
+      <Icon name="circle-check-big" size={28} />
+    </span>
+    <h3>Request received</h3>
+    <p>
+      Thanks — your repair request has been captured. We’ll be in touch by phone to confirm
+      coverage, discuss the diagnostic process and arrange a visit.
+    </p>
+  </div>
+
+  <div class="booking__alt">
+    <p>Prefer to talk it through?</p>
+    <Button
+      href={business.phone.href}
+      variant="secondary"
+      icon="phone-call"
+    >
+      {business.cta.secondary}
+    </Button>
+  </div>
+
+  <p class="booking__privacy">
+    <Icon name="lock" size={15} aria-hidden="true" />
+    <span>
+      <strong>Privacy note.</strong> The contact details you provide are used only to respond to your
+      request and arrange service, and are never shared for marketing.
+    </span>
+  </p>
+</section>
+
+<script>
+  import {
+    validateBooking,
+    submitBookingRequest,
+    type BookingRequest,
+    type FieldErrors,
+  } from '../scripts/booking';
+
+  const form = document.querySelector<HTMLFormElement>('#booking-form');
+  const successPanel = document.querySelector<HTMLElement>('#booking-success');
+  const submitButton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+  // Static-render fallback: at build time there is no query string, so the
+  // ?appliance=<id> preselect is applied on load from the page URL.
+  const applianceSelect = document.querySelector<HTMLSelectElement>('#field-appliance');
+  const wantedAppliance = new URLSearchParams(window.location.search).get('appliance');
+  if (applianceSelect && wantedAppliance) {
+    const isValid = Array.from(applianceSelect.options).some((o) => o.value === wantedAppliance);
+    if (isValid) applianceSelect.value = wantedAppliance;
+  }
+
+  if (form && successPanel && submitButton) {
+    const getField = (name: string) => form.elements.namedItem(name) as
+      | HTMLInputElement
+      | HTMLSelectElement
+      | HTMLTextAreaElement
+      | null;
+
+    const setError = (name: keyof FieldErrors, message: string | undefined) => {
+      const input = getField(String(name));
+      const errorEl = document.getElementById(`error-${String(name)}`);
+      if (!input || !errorEl) return;
+      if (message) {
+        input.setAttribute('aria-invalid', 'true');
+        errorEl.textContent = message;
+        errorEl.hidden = false;
+      } else {
+        input.removeAttribute('aria-invalid');
+        errorEl.textContent = '';
+        errorEl.hidden = true;
+      }
+    };
+
+    // Clear an error as soon as the visitor starts correcting the field.
+    form.addEventListener('input', (e) => {
+      const target = e.target as HTMLElement & { name?: string; value?: string };
+      if (target.name) setError(target.name as keyof FieldErrors, undefined);
+    });
+    form.addEventListener('change', (e) => {
+      const target = e.target as HTMLElement & { name?: string };
+      if (target.name) setError(target.name as keyof FieldErrors, undefined);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data: BookingRequest = {
+        name: getField('name')?.value ?? '',
+        phone: getField('phone')?.value ?? '',
+        email: getField('email')?.value ?? '',
+        applianceType: getField('applianceType')?.value ?? '',
+        city: getField('city')?.value ?? '',
+        preferredWindow: getField('preferredWindow')?.value ?? '',
+        description: getField('description')?.value ?? '',
+      };
+
+      const errors: FieldErrors = validateBooking(data);
+      const errorKeys = Object.keys(errors) as (keyof FieldErrors)[];
+
+      errorKeys.forEach((k) => setError(k, errors[k]));
+
+      if (errorKeys.length > 0) {
+        const first = getField(String(errorKeys[0]));
+        first?.focus();
+        return;
+      }
+
+      // Valid — submit through the service boundary.
+      submitButton.disabled = true;
+      submitButton.textContent = 'Submitting…';
+      let submitted = false;
+
+      try {
+        const result = await submitBookingRequest(data);
+        if (result.ok) {
+          submitted = true;
+          form.hidden = true;
+          successPanel.hidden = false;
+          successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit request';
+        if (!submitted) form.hidden = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .booking {
+    position: relative;
+  }
+
+  .booking__head h2 {
+    margin-bottom: var(--space-3);
+  }
+
+  .booking__head > p {
+    color: var(--color-muted);
+  }
+
+  .booking__form {
+    margin-top: var(--space-5);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 40rem) {
+    .booking__form {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .field--wide {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .field label {
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    color: var(--color-navy);
+  }
+
+  .req {
+    color: var(--color-danger);
+    margin-left: 0.15rem;
+  }
+
+  .opt {
+    font-weight: 500;
+    color: var(--color-muted);
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: var(--font-size-body);
+    color: var(--color-navy);
+    padding: 0.72rem 0.875rem;
+    border: 1.5px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    transition: border-color var(--ease-fast), box-shadow var(--ease-fast);
+  }
+
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
+  }
+
+  .field input[aria-invalid='true'],
+  .field select[aria-invalid='true'],
+  .field textarea[aria-invalid='true'] {
+    border-color: var(--color-danger);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 7rem;
+  }
+
+  .field__hint {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    color: var(--color-muted);
+  }
+
+  .field__error {
+    margin: 0;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-danger);
+  }
+
+  .booking__success {
+    margin-top: var(--space-5);
+    padding: var(--space-6);
+    border: 1px solid var(--color-success);
+    background: var(--color-success-bg);
+    border-radius: var(--radius-lg);
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+  }
+
+  .booking__success-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: var(--radius-md);
+    background: var(--color-success);
+    color: var(--color-white);
+  }
+
+  .booking__success h3 {
+    margin-bottom: 0;
+  }
+
+  .booking__success p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    max-width: 52ch;
+  }
+
+  .booking__alt {
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .booking__alt p {
+    margin: 0;
+    font-weight: 650;
+    color: var(--color-navy);
+  }
+
+  .booking__privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin: var(--space-5) 0 0;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-soft);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    color: var(--color-muted);
+    line-height: var(--leading-snug);
+    max-width: none;
+  }
+
+  .booking__privacy svg {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--color-primary);
+  }
+</style>

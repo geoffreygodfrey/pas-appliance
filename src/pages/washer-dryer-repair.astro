@@ -1,0 +1,8 @@
+---
+import ServiceLayout from '../layouts/ServiceLayout.astro';
+import { getService } from '../data/services';
+
+const service = getService('washer-dryer-repair')!;
+---
+
+<ServiceLayout service={service} />

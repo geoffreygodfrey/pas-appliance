@@ -1,0 +1,74 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  variant?: 'light' | 'dark';
+  class?: string;
+  tag?: 'span' | 'a';
+  href?: string;
+}
+
+const { variant = 'light', class: className = '', tag = 'span', href } = Astro.props;
+
+const classes = ['logo', `logo--${variant}`, className].filter(Boolean).join(' ');
+const Tag = tag;
+---
+
+<Tag href={href} class={classes} aria-label="GTA Appliance Repair — home">
+  <span class="logo__mark" aria-hidden="true">
+    <Icon name="wrench" size={18} strokeWidth={2.2} />
+  </span>
+  <span class="logo__word">
+    <span class="logo__name">GTA Appliance Repair</span>
+    <span class="logo__tag">Brampton &amp; the GTA</span>
+  </span>
+</Tag>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    color: var(--color-navy);
+  }
+
+  .logo--dark {
+    color: var(--color-white);
+  }
+
+  .logo__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-white);
+    flex: none;
+  }
+
+  .logo__word {
+    display: grid;
+    line-height: 1.1;
+  }
+
+  .logo__name {
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: currentColor;
+  }
+
+  .logo__tag {
+    margin-top: 0.2rem;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-muted);
+  }
+
+  .logo--dark .logo__tag {
+    color: rgb(255 255 255 / 0.65);
+  }
+</style>

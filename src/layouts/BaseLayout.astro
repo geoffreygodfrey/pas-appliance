@@ -1,0 +1,95 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import StickyMobileCTA from '../components/StickyMobileCTA.astro';
+import { business } from '../data/business';
+import { pexelsUrl, IMAGES, type ImageAsset } from '../data/images';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path used for the canonical URL. Defaults to the current pathname. */
+  path?: string;
+  /** Share image. Defaults to the technician hero. */
+  ogImage?: ImageAsset;
+  ogType?: 'website' | 'article';
+  /** Extra JSON-LD blocks merged before serialization. */
+  jsonLd?: object[];
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  path,
+  ogImage = IMAGES.heroTechnician,
+  ogType = 'website',
+  jsonLd = [],
+  bodyClass = '',
+} = Astro.props;
+
+const currentPath = path ?? Astro.url.pathname;
+const canonical = new URL(currentPath, business.siteUrl).toString();
+const ogImageUrl = pexelsUrl(ogImage, 1200, 630);
+
+const siteDescription = `Appliance repair based in ${business.base}, serving Brampton and the GTA — fridge, washer, dryer, stove and dishwasher repair.`;
+
+const structuredData: object[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: business.name,
+    url: business.siteUrl,
+    description: siteDescription,
+  },
+  ...jsonLd,
+];
+const jsonLdDataset = JSON.stringify(structuredData);
+
+const robots = 'index, follow';
+---
+
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0b1220" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="en_CA" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;550;600;700&display=swap"
+    />
+    <link rel="preconnect" href="https://images.pexels.com" />
+
+    <script type="application/ld+json" set:html={jsonLdDataset} />
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+    <StickyMobileCTA />
+  </body>
+</html>

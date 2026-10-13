@@ -1,0 +1,281 @@
+---
+import Logo from './Logo.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import MobileMenu from './MobileMenu.astro';
+import { business } from '../data/business';
+import { services } from '../data/services';
+
+const path = Astro.url.pathname;
+
+/** The four core services plus the service-area link, in a fixed order. */
+const primaryLinks = [
+  ...services.map((service) => ({
+    label: service.navLabel,
+    href: `/${service.slug}/`,
+  })),
+  { label: business.nav.serviceAreas, href: '/service-areas/' },
+];
+
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+
+const phone = business.phone;
+---
+
+<header class="site-header">
+  <div class="header-inner container">
+    <a href="/" class="logo-link" aria-label={`${business.name} — home`}>
+      <Logo />
+    </a>
+
+    <nav class="nav-desktop" aria-label="Primary">
+      <ul>
+        {primaryLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class:list={['nav-link', { 'is-active': isActive(link.href) }]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <a
+        class="phone-link"
+        href={phone.href}
+        aria-label={`Call ${business.name} at ${phone.display}`}
+      >
+        <Icon name="phone-call" size={18} />
+        <span class="phone-link__num">{phone.display}</span>
+      </a>
+      <Button href="/book-repair/" size="sm" ariaLabel={`${business.cta.primary} — request service`}>
+        {business.cta.primary}
+      </Button>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span class="visually-hidden">Menu</span>
+        <Icon name="menu" size={26} data-menu-open-icon />
+        <Icon name="x" size={26} data-menu-close-icon class="menu-toggle__x" />
+      </button>
+    </div>
+  </div>
+
+  <MobileMenu currentPath={path} primaryLinks={primaryLinks} />
+</header>
+
+<script>
+  /**
+   * Header interactivity: toggles the compact mobile menu. The menu is
+   * keyboard accessible and dismisses on Escape, outside clicks, and link
+   * selection. All destinations fit inline at wider widths, so no dropdown
+   * is needed.
+   */
+  const header = document.querySelector('.site-header') as HTMLElement | null;
+  if (header) {
+    const menuToggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+    const menu = document.getElementById('mobile-menu');
+    const menuOpenIcon = header.querySelector('[data-menu-open-icon]');
+    const menuCloseIcon = header.querySelector('[data-menu-close-icon]');
+
+    const setMenuOpen = (open: boolean) => {
+      if (!menu || !menuToggle || !menuOpenIcon || !menuCloseIcon) return;
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
+      menu.classList.toggle('is-open', open);
+      (menuOpenIcon as HTMLElement).style.display = open ? 'none' : '';
+      (menuCloseIcon as HTMLElement).style.display = open ? '' : 'none';
+      if (open) {
+        menu.querySelector<HTMLElement>('a')?.focus();
+      } else {
+        menuToggle.focus();
+      }
+    };
+
+    menuToggle?.addEventListener('click', () => {
+      const open = menuToggle.getAttribute('aria-expanded') === 'true';
+      setMenuOpen(!open);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    });
+
+    // Close the mobile menu when a navigation link within it is chosen.
+    menu?.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setMenuOpen(false);
+    });
+
+    // If the layout grows past the compact breakpoint, ensure the menu closes.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1120) setMenuOpen(false);
+    });
+  }
+</script>
+
+<style>
+  .site-header {
+    --header-total: 4.25rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: var(--header-h);
+    padding-block: var(--space-2);
+  }
+
+  .logo-link {
+    text-decoration: none;
+    margin-right: auto;
+  }
+
+  /* Inline navigation — hidden until the viewport can hold every link. */
+  .nav-desktop {
+    display: none;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.65rem;
+    border-radius: var(--radius-md);
+    color: var(--color-body);
+    font-weight: 550;
+    font-size: 0.9375rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color var(--ease-fast), background-color var(--ease-fast);
+  }
+
+  .nav-link:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+  }
+
+  .nav-link.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  /* Phone: hidden on the smallest screens (the sticky bar covers it). */
+  .phone-link {
+    display: none;
+    align-items: center;
+    gap: var(--space-2);
+    height: 2.75rem;
+    padding-inline: 0.6rem;
+    border-radius: var(--radius-md);
+    color: var(--color-navy);
+    font-weight: 650;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .phone-link:hover {
+    color: var(--color-primary);
+  }
+
+  .phone-link svg {
+    color: var(--color-primary);
+  }
+
+  .phone-link__num {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    color: var(--color-navy);
+    cursor: pointer;
+  }
+
+  .menu-toggle svg {
+    display: none;
+  }
+
+  .menu-toggle svg:first-child {
+    display: block;
+  }
+
+  .menu-toggle__x {
+    display: none;
+  }
+
+  /* Keep the header Book button from crowding the logo on tiny screens. */
+  .header-actions :global(.button--sm) {
+    display: none;
+  }
+
+  /* ---------- Breakpoints ---------- */
+
+  @media (min-width: 30rem) {
+    .header-actions :global(.button--sm) {
+      display: inline-flex;
+    }
+  }
+
+  /* Medium screens: show the phone action, keep the compact menu. */
+  @media (min-width: 48rem) {
+    .phone-link {
+      display: inline-flex;
+    }
+  }
+
+  /* Wide screens: every primary link fits inline, so drop the hamburger. */
+  @media (min-width: 70rem) {
+    .nav-desktop {
+      display: block;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+  }
+
+  /* Very wide: reveal the full phone number alongside the links. */
+  @media (min-width: 80rem) {
+    .phone-link__num {
+      display: inline;
+    }
+  }
+</style>

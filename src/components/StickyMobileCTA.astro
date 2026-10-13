@@ -1,0 +1,66 @@
+---
+import Icon from './Icon.astro';
+import { business } from '../data/business';
+---
+
+<nav class="sticky-cta" aria-label="Quick contact">
+  <a class="sticky-cta__call" href={business.phone.href}>
+    <Icon name="phone-call" size={18} aria-hidden="true" />
+    <span>Call</span>
+  </a>
+  <a class="sticky-cta__book" href="/book-repair/">
+    <Icon name="arrow-right" size={18} aria-hidden="true" />
+    {business.cta.primary}
+  </a>
+</nav>
+
+<style>
+  .sticky-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+    background: var(--color-white);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -8px 24px rgb(11 18 32 / 0.08);
+  }
+
+  .sticky-cta a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    height: 3rem;
+    border-radius: var(--radius-md);
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .sticky-cta__call {
+    background: var(--color-white);
+    color: var(--color-navy);
+    border: 1.5px solid var(--color-border-strong);
+  }
+
+  .sticky-cta__call svg {
+    color: var(--color-primary);
+  }
+
+  .sticky-cta__book {
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  /* Desktop: hide the bar. */
+  @media (min-width: 48rem) {
+    .sticky-cta {
+      display: none;
+    }
+  }
+</style>

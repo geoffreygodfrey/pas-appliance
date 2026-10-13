@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceGrid from '../components/ServiceGrid.astro';
+import TrustSection from '../components/TrustSection.astro';
+import RepairProcess from '../components/RepairProcess.astro';
+import PricingTransparency from '../components/PricingTransparency.astro';
+import ReviewSection from '../components/ReviewSection.astro';
+import ServiceAreaSection from '../components/ServiceAreaSection.astro';
+import FAQSection from '../components/FAQSection.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import { generalFaqs } from '../data/faqs';
+import { IMAGES } from '../data/images';
+import type { IconName } from '../lib/icons';
+
+const title = 'Appliance Repair in Brampton & the GTA | GTA Appliance Repair';
+const description =
+  'Fridge, washer, dryer, stove and dishwasher repair for Brampton and the GTA. Describe the problem in your own words and request service — coverage and fees confirmed before any work.';
+
+const heroPoints: Array<{ icon: IconName; text: string }> = [
+  { icon: 'check', text: 'No model number needed' },
+  { icon: 'message-square', text: 'Describe the problem' },
+  { icon: 'circle-dollar-sign', text: 'Discuss fees before repair' },
+];
+---
+
+<BaseLayout title={title} description={description} ogImage={IMAGES.heroTechnician}>
+  <Hero
+    kicker="Appliance repair in Brampton & the GTA"
+    title="Appliance Repair in Brampton & Across the GTA"
+    subtitle="Need your fridge, washer, dryer, stove or dishwasher repaired? Tell us what's wrong and request service in your area."
+    image={IMAGES.heroTechnician}
+    imagePriority={true}
+    points={heroPoints}
+  />
+
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        title="What can we help you repair?"
+        lede="Choose your appliance to explore common problems and request service."
+      />
+      <ServiceGrid />
+    </div>
+  </section>
+
+  <TrustSection
+    intro="Know what to expect when you request appliance repair — from explaining the problem to discussing the estimate."
+  />
+
+  <RepairProcess />
+
+  <PricingTransparency />
+
+  <ReviewSection />
+
+  <ServiceAreaSection />
+
+  <FAQSection faqs={generalFaqs} />
+
+  <FinalCTA />
+</BaseLayout>

@@ -1,0 +1,217 @@
+/*
+ * Global base styles and shared utility classes.
+ * Component-scoped styles live next to each component.
+ */
+
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  line-height: var(--leading-body);
+  color: var(--color-body);
+  background: var(--color-bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  /* Room for the sticky mobile CTA on small screens. */
+  padding-bottom: var(--footer-pad-bottom-mobile);
+}
+
+@media (min-width: 48rem) {
+  body {
+    padding-bottom: 0;
+  }
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 var(--space-4);
+  color: var(--color-navy);
+  line-height: var(--leading-tight);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+h1 {
+  font-size: var(--font-size-hero);
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: 650;
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+  font-weight: 650;
+}
+
+p {
+  margin: 0 0 var(--space-4);
+  max-width: 60ch;
+}
+
+a {
+  color: var(--color-primary);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+img,
+picture {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+ul,
+ol {
+  padding-left: 1.25rem;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-xs, 2px);
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+/* ---------- Layout utilities ---------- */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+.container-tight {
+  max-width: var(--container-tight);
+}
+
+.container-narrow {
+  max-width: var(--container-narrow);
+}
+
+.section {
+  padding-block: clamp(2.75rem, 5vw, 4.5rem);
+}
+
+.section-soft {
+  background: var(--color-bg-soft);
+}
+
+.section-nav {
+  background: var(--color-navy);
+  color: var(--color-white);
+}
+
+/* ---------- Headings ---------- */
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.section-head {
+  max-width: var(--container-narrow);
+  margin-bottom: var(--space-8);
+}
+
+.section-head h2 {
+  margin-bottom: var(--space-3);
+}
+
+.section-head p {
+  color: var(--color-muted);
+  margin-bottom: 0;
+}
+
+/* ---------- Skip link ---------- */
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -100%;
+  z-index: 100;
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-navy);
+  color: var(--color-white);
+  border-radius: var(--radius-sm);
+  transition: top var(--ease-fast);
+}
+
+.skip-link:focus {
+  top: var(--space-3);
+  color: var(--color-white);
+}
+
+/* ---------- Visually hidden ---------- */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Check list ---------- */
+
+.check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.check-list li {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  line-height: var(--leading-snug);
+}
+
+.check-list svg {
+  flex: none;
+  margin-top: 0.15rem;
+  color: var(--color-primary);
+}

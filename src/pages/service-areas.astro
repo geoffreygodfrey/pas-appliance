@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import { serviceAreas } from '../data/service-areas';
+import { business } from '../data/business';
+import { IMAGES } from '../data/images';
+
+const title = 'Service Areas — Brampton & the GTA | GTA Appliance Repair';
+const description =
+  'GTA Appliance Repair is based in Brampton and serves selected surrounding GTA communities. See where we work and how coverage is confirmed when you request service.';
+---
+
+<BaseLayout title={title} description={description} ogImage={IMAGES.kitchen}>
+  <Hero
+    kicker="Service coverage"
+    title="Appliance Repair in Brampton & Surrounding GTA Communities"
+    subtitle="We serve Brampton and selected communities across the Greater Toronto Area. Contact us to confirm coverage for your location."
+    image={IMAGES.kitchen}
+  />
+
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Communities"
+        title="Where we work"
+        lede="This is our provisional coverage. Contact us with your city or postal code and we’ll confirm availability for your address before arranging a visit."
+      />
+
+      <ul class="area-grid">
+        {serviceAreas.map((area) => (
+          <li>
+            <Icon name="map-pin" size={18} aria-hidden="true" />
+            {area.name}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-soft">
+    <div class="container container-tight">
+      <div class="coverage-panel">
+        <span class="coverage-panel__icon" aria-hidden="true">
+          <Icon name="shield-check" size={26} />
+        </span>
+        <div class="coverage-panel__body">
+          <h2>Not sure if we cover your neighbourhood?</h2>
+          <p>
+            Tell us your city or postal code in the request form. Coverage is confirmed before any
+            appointment is arranged — you won’t be left guessing.
+          </p>
+          <div class="coverage-panel__actions">
+            <Button href="/book-repair/" iconRight="arrow-right" ariaLabel={`${business.cta.primary} — confirm coverage`}>
+              {business.cta.primary}
+            </Button>
+            <Button href={business.phone.href} variant="secondary" icon="phone-call">
+              {business.cta.secondary}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container-tight">
+      <SectionHeading
+        eyebrow="Repairs we help with"
+        title="Explore the appliance services"
+        lede="Each service page explains the common problems we help diagnose and what to expect when you request service."
+      />
+      <div class="area-services">
+        <Button href="/fridge-repair/" variant="secondary" icon="refrigerator">Fridge Repair</Button>
+        <Button href="/washer-dryer-repair/" variant="secondary" icon="washing-machine">Washer & Dryer Repair</Button>
+        <Button href="/stove-repair/" variant="secondary" icon="flame">Stove Repair</Button>
+        <Button href="/dishwasher-repair/" variant="secondary" icon="droplets">Dishwasher Repair</Button>
+      </div>
+    </div>
+  </section>
+
+  <FinalCTA />
+</BaseLayout>
+
+<style>
+  .area-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-4);
+  }
+
+  .area-grid li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 600;
+    color: var(--color-navy);
+  }
+
+  .area-grid svg {
+    flex: none;
+    color: var(--color-primary);
+  }
+
+  .coverage-panel {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+
+  .coverage-panel__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-md);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  .coverage-panel h2 {
+    font-size: var(--font-size-h3);
+    margin-bottom: var(--space-2);
+  }
+
+  .coverage-panel p {
+    color: var(--color-muted);
+    margin-bottom: var(--space-5);
+  }
+
+  .coverage-panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .area-services {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 40rem) {
+    .area-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .area-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

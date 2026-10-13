@@ -1,0 +1,171 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { business } from '../data/business';
+import { services } from '../data/services';
+
+const year = new Date().getFullYear();
+const phone = business.phone;
+
+const serviceLinks = services.map((service) => ({
+  label: service.navLabel,
+  href: `/${service.slug}/`,
+}));
+const companyLinks = [
+  { label: business.nav.about, href: '/about/' },
+  { label: business.nav.serviceAreas, href: '/service-areas/' },
+  { label: business.nav.book, href: '/book-repair/' },
+];
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <Logo variant="dark" />
+      <p class="footer-about">
+        Appliance repair based in Brampton, Ontario, serving Brampton and surrounding GTA
+        communities. Fridge, washer, dryer, stove and dishwasher repair — request service and
+        describe the problem in your own words.
+      </p>
+    </div>
+
+    <nav class="footer-col" aria-label="Appliance services">
+      <h2>Services</h2>
+      <ul>
+        {serviceLinks.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav class="footer-col" aria-label="Company">
+      <h2>Company</h2>
+      <ul>
+        {companyLinks.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="footer-col footer-contact">
+      <h2>Contact</h2>
+      <ul>
+        <li>
+          <a href={phone.href}>
+            <Icon name="phone-call" size={16} /> {phone.display}
+          </a>
+        </li>
+        <li class="footer-market">
+          <Icon name="map-pin" size={16} /> {business.base}
+        </li>
+        <li class="footer-market">
+          <Icon name="map-pin" size={16} /> Serving {business.market}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container footer-bottom__inner">
+      <p>
+        © {year} {business.name}. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-navy);
+    color: rgb(255 255 255 / 0.82);
+    margin-top: var(--space-8);
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: var(--space-8);
+    padding-block: var(--space-8) var(--space-6);
+  }
+
+  .footer-brand {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+
+  .footer-about {
+    margin: 0;
+    color: rgb(255 255 255 / 0.72);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-body);
+    max-width: 38ch;
+  }
+
+  .footer-col h2 {
+    color: var(--color-white);
+    font-size: 1rem;
+    font-weight: 650;
+    margin-bottom: var(--space-4);
+  }
+
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  .footer-col a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: rgb(255 255 255 / 0.82);
+    text-decoration: none;
+    transition: color var(--ease-fast);
+  }
+
+  .footer-col a:hover {
+    color: var(--color-white);
+  }
+
+  .footer-market {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-snug);
+  }
+
+  .footer-market svg {
+    flex: none;
+    margin-top: 0.2rem;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .footer-contact svg {
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .footer-contact a svg {
+    color: #7cb2ff;
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+    padding-block: var(--space-5);
+  }
+
+  .footer-bottom p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  @media (min-width: 48rem) {
+    .footer-grid {
+      grid-template-columns: 1.5fr 1fr 1fr 1.25fr;
+    }
+  }
+</style>

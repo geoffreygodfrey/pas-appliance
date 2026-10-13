@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import { business } from '../data/business';
+import { services } from '../data/services';
+
+const title = 'Page not found | GTA Appliance Repair';
+const description = 'The page you were looking for could not be found.';
+---
+
+<BaseLayout title={title} description={description} path="/">
+  <section class="nf">
+    <div class="container container-tight nf__card">
+      <p class="nf__code" aria-hidden="true">404</p>
+      <p class="eyebrow">That page has moved or never existed</p>
+      <h1>We couldn’t find that page</h1>
+      <p class="nf__copy">
+        The page you’re after isn’t here — but the services you’re looking for still are. Head
+        back home or jump straight to the repair you need.
+      </p>
+
+      <div class="nf__actions">
+        <Button href="/" iconRight="arrow-right">Back to home</Button>
+        <Button href="/book-repair/" variant="secondary">
+          {business.cta.primary}
+        </Button>
+      </div>
+
+      <div class="nf__services" aria-label="Popular pages">
+        {services.map((s) => (
+          <a href={`/${s.slug}/`}>
+            <Icon name="arrow-right" size={15} aria-hidden="true" />
+            {s.navLabel}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    padding-block: var(--space-8) var(--space-10);
+    text-align: center;
+  }
+
+  .nf__card {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+  }
+
+  .nf__code {
+    margin: 0;
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-primary-soft);
+    letter-spacing: 0.02em;
+  }
+
+  .nf h1 {
+    font-size: var(--font-size-h2);
+  }
+
+  .nf__copy {
+    color: var(--color-muted);
+    max-width: 46ch;
+    margin-inline: auto;
+  }
+
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  .nf__services {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-4);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+    width: 100%;
+  }
+
+  .nf__services a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--color-navy);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+  }
+
+  .nf__services a:hover {
+    color: var(--color-primary);
+  }
+</style>

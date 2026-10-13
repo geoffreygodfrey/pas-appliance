@@ -1,0 +1,97 @@
+---
+import Icon from './Icon.astro';
+import type { Service } from '../data/services';
+import type { IconName } from '../lib/icons';
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+
+const icons: Record<Service['id'], IconName> = {
+  refrigerator: 'refrigerator',
+  washer: 'washing-machine',
+  dryer: 'wind',
+  stove: 'flame',
+  dishwasher: 'droplets',
+  other: 'wrench',
+};
+---
+
+<a class="service-card" href={`/${service.slug}/`}>
+  <span class="service-card__icon" aria-hidden="true">
+    <Icon name={icons[service.id]} size={26} strokeWidth={1.8} />
+  </span>
+  <h3>{service.cardTitle}</h3>
+  <p>{service.cardCopy}</p>
+  <span class="service-card__link">
+    Learn more
+    <Icon name="arrow-right" size={16} aria-hidden="true" />
+  </span>
+</a>
+
+<style>
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    text-decoration: none;
+    color: var(--color-body);
+    transition:
+      border-color var(--ease-fast),
+      box-shadow var(--ease-fast),
+      transform var(--ease-fast);
+  }
+
+  .service-card:hover {
+    border-color: var(--color-primary-border);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .service-card:hover h3,
+  .service-card:hover .service-card__link {
+    color: var(--color-primary);
+  }
+
+  .service-card__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: var(--radius-md);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  .service-card h3 {
+    font-size: 1.2rem;
+    margin: 0;
+    transition: color var(--ease-fast);
+  }
+
+  .service-card p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    line-height: 1.55;
+    color: var(--color-muted);
+  }
+
+  .service-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-top: auto;
+    padding-top: var(--space-2);
+    font-weight: 650;
+    font-size: var(--font-size-sm);
+    color: var(--color-navy);
+    transition: color var(--ease-fast);
+  }
+</style>

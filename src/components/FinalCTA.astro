@@ -1,0 +1,107 @@
+---
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import { business } from '../data/business';
+
+interface Props {
+  title?: string;
+  lede?: string;
+  showCallNote?: boolean;
+}
+
+const {
+  title = 'Ready to get your appliance checked?',
+  lede = "Tell us which appliance needs attention and describe the problem. We'll help you understand the next steps and discuss repair service for your area.",
+  showCallNote = true,
+} = Astro.props;
+---
+
+<section class="section section-nav">
+  <div class="container final-cta">
+    <div class="final-cta__copy">
+      <h2>{title}</h2>
+      <p class="final-cta__lede">{lede}</p>
+    </div>
+
+    <div class="final-cta__actions">
+      <Button
+        href="/book-repair/"
+        variant="primary"
+        size="lg"
+        iconRight="arrow-right"
+        ariaLabel={business.cta.primary}
+      >
+        {business.cta.primary}
+      </Button>
+      <Button
+        href={business.phone.href}
+        variant="ghost-light"
+        size="lg"
+        icon="phone-call"
+      >
+        {business.cta.secondary}
+      </Button>
+      {showCallNote && (
+        <p class="final-cta__phone-note">
+          <Icon name="info" size={14} aria-hidden="true" />
+          Prefer to talk it through? Call {business.phone.display}.
+        </p>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .final-cta {
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  .final-cta__copy h2 {
+    color: var(--color-white);
+    margin-bottom: var(--space-3);
+  }
+
+  .final-cta__lede {
+    margin: 0;
+    color: rgb(255 255 255 / 0.78);
+    font-size: 1.0625rem;
+    line-height: var(--leading-body);
+    max-width: 52ch;
+  }
+
+  .final-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+  }
+
+  .final-cta__phone-note {
+    flex-basis: 100%;
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: rgb(255 255 255 / 0.65);
+    max-width: 42ch;
+  }
+
+  .final-cta__phone-note svg {
+    flex: none;
+    margin-top: 0.15rem;
+  }
+
+  @media (min-width: 48rem) {
+    .final-cta {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--space-8);
+    }
+
+    .final-cta__actions {
+      justify-content: flex-start;
+    }
+  }
+</style>

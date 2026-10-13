@@ -1,0 +1,329 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs, { type Crumb } from '../components/Breadcrumbs.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Icon from '../components/Icon.astro';
+import RepairProcess from '../components/RepairProcess.astro';
+import PricingTransparency from '../components/PricingTransparency.astro';
+import ReviewSection from '../components/ReviewSection.astro';
+import ServiceAreaSection from '../components/ServiceAreaSection.astro';
+import FAQSection from '../components/FAQSection.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import Button from '../components/Button.astro';
+import type { Service } from '../data/services';
+import { business } from '../data/business';
+import type { IconName } from '../lib/icons';
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+
+const crumbs: Crumb[] = [{ label: service.crumbLabel }];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: new URL('/', business.siteUrl).toString() },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: service.crumbLabel,
+      item: new URL(`/${service.slug}/`, business.siteUrl).toString(),
+    },
+  ],
+};
+
+const bookHref = `/book-repair/?appliance=${service.id}`;
+
+const iconFor = (name?: string): IconName => (name as IconName) ?? 'wrench';
+---
+
+<BaseLayout
+  title={service.seo.title}
+  description={service.seo.description}
+  path={`/${service.slug}/`}
+  ogImage={service.hero.image}
+  jsonLd={[breadcrumbSchema]}
+>
+  <section class="svc-hero">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+    </div>
+    <Hero
+      bg="navy"
+      kicker={service.hero.kicker}
+      title={service.hero.title}
+      subtitle={service.hero.subtitle}
+      image={service.hero.image}
+      primaryHref={bookHref}
+      secondaryLabel={business.cta.secondary}
+      meta="Coverage, the diagnostic process and applicable fees are all confirmed with you before any repair work proceeds."
+    />
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionHeading eyebrow={service.hero.kicker} title={service.symptomsTitle} lede={service.symptomsIntro} />
+      <ul class="symptom-grid">
+        {service.symptomGroups.map((g) => (
+          <li>
+            <h3>
+              {g.heading ?? service.cardTitle}
+            </h3>
+            <span class="symptom-grid__icon" aria-hidden="true">
+              <Icon name={iconFor(g.icon)} size={20} strokeWidth={1.8} />
+            </span>
+            <ul>
+              {g.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {service.feature && (
+    <section class="section section-soft">
+      <div class="container container-tight">
+        <div class="feature-panel">
+          <div>
+            <SectionHeading eyebrow="Good to know" title={service.feature.title} />
+            <ul class="check-list">
+              {service.feature.items.map((item) => (
+                <li>
+                  <Icon name="circle-check-big" size={20} aria-hidden="true" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {service.feature.note && (
+            <p class="feature-panel__note">
+              <Icon name="shield-alert" size={18} aria-hidden="true" />
+              {service.feature.note}
+            </p>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container container-tight">
+      <SectionHeading eyebrow="What we service" title={service.supportedTitle} />
+      <div class="supported-panel">
+        <ul class="check-list">
+          {service.supportedTypes.map((t) => (
+            <li>
+              <Icon name="circle-check-big" size={20} aria-hidden="true" />
+              {t}
+            </li>
+          ))}
+        </ul>
+        <p class="supported-panel__note">
+          <Icon name="info" size={16} aria-hidden="true" />
+          {service.supportedNote}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <RepairProcess />
+
+  <PricingTransparency />
+
+  <div class="section">
+    <div class="container container-tight">
+      <div class="service-cta">
+        <h2>Need help with {service.formLabel.toLowerCase()} repair?</h2>
+        <p>
+          {service.hero.subtitle}
+        </p>
+        <div class="service-cta__actions">
+          <Button href={bookHref} size="lg" iconRight="arrow-right" ariaLabel={`${business.cta.primary} — ${service.cardTitle}`}>
+            {business.cta.primary}
+          </Button>
+          <Button
+            href={business.phone.href}
+            variant="secondary"
+            size="lg"
+            icon="phone-call"
+          >
+            {business.cta.secondary}
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ReviewSection />
+
+  <ServiceAreaSection />
+
+  <FAQSection faqs={service.faqs} heading={`${service.hero.kicker} — common questions`} />
+
+  <FinalCTA showCallNote={true} />
+</BaseLayout>
+
+<style>
+  .svc-hero .container {
+    padding-block: var(--space-4) 0;
+  }
+
+  .svc-hero :global(.breadcrumbs a),
+  .svc-hero :global(.breadcrumbs svg) {
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .svc-hero :global(.breadcrumbs a:hover) {
+    color: var(--color-white);
+  }
+
+  .svc-hero :global(.breadcrumbs span[aria-current='page']) {
+    color: rgb(255 255 255 / 0.8);
+  }
+
+  /* Symptom groups */
+  .symptom-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .symptom-grid li {
+    position: relative;
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+  }
+
+  .symptom-grid__icon {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  .symptom-grid h3 {
+    font-size: 1.05rem;
+    margin-bottom: var(--space-3);
+    padding-right: 3rem;
+  }
+
+  .symptom-grid ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-body);
+  }
+
+  @media (min-width: 40rem) {
+    .symptom-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .symptom-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Feature panel */
+  .feature-panel {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+  }
+
+  .feature-panel__note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin: 0;
+    padding: var(--space-4);
+    background: var(--color-warning-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-warning-text);
+    line-height: var(--leading-snug);
+    max-width: none;
+  }
+
+  .feature-panel__note svg {
+    flex: none;
+    margin-top: 0.15rem;
+  }
+
+  /* Supported types */
+  .supported-panel {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .supported-panel__note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin: 0;
+    padding: var(--space-4);
+    background: var(--color-bg-soft);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: var(--leading-snug);
+    max-width: none;
+  }
+
+  .supported-panel__note svg {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--color-primary);
+  }
+
+  /* Mid-page CTA */
+  .service-cta {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .service-cta h2 {
+    font-size: 1.4rem;
+  }
+
+  .service-cta p {
+    color: var(--color-muted);
+  }
+
+  .service-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+</style>

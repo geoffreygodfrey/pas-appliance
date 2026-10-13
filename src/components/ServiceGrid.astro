@@ -1,0 +1,30 @@
+---
+import ServiceCard from './ServiceCard.astro';
+import { services } from '../data/services';
+---
+
+<div class="service-grid">
+  {services.map((s) => (
+    <ServiceCard service={s} />
+  ))}
+</div>
+
+<style>
+  .service-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 40rem) {
+    .service-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .service-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BookingForm from '../components/BookingForm.astro';
+import FAQSection from '../components/FAQSection.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import Icon from '../components/Icon.astro';
+import { business } from '../data/business';
+import { bookingFaqs, generalFaqs } from '../data/faqs';
+import { applianceOptions } from '../data/services';
+import { IMAGES } from '../data/images';
+
+const title = 'Book a Repair | GTA Appliance Repair';
+const description =
+  'Request appliance repair service in Brampton and the GTA. Describe your fridge, washer, dryer, stove or dishwasher problem in your own words.';
+
+// Allow service pages to preselect the appliance via ?appliance=<id>.
+const queryAppliance = Astro.url.searchParams.get('appliance');
+const preselected = applianceOptions.some((o) => o.value === queryAppliance)
+  ? (queryAppliance as string)
+  : undefined;
+---
+
+<BaseLayout title={title} description={description} ogImage={IMAGES.heroTechnician}>
+  <section class="section book-hero">
+    <div class="container container-tight">
+      <p class="eyebrow">{business.nav.book}</p>
+      <h1>Book a Repair</h1>
+      <p class="book-hero__lede">
+        Tell us which appliance needs attention and what it’s doing. No model numbers, no
+        technical diagnosis — a short description in your own words is all we need to start.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-soft">
+    <div class="container container-tight">
+      <div class="book-panel">
+        <BookingForm preselectedAppliance={preselected} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container-tight">
+      <div class="book-alt">
+        <h2 class="book-alt__title">Need help deciding what to write?</h2>
+        <p>
+          Just describe what the appliance is doing — “the washer won’t drain”, “the fridge is
+          warm inside”, “the dryer takes forever and never gets hot”. That’s enough.
+        </p>
+        <p>
+          You can also call to talk it through before filling anything in:
+        </p>
+        <div class="book-alt__actions">
+          <a class="book-alt__call" href={business.phone.href}>
+            <Icon name="phone-call" size={18} />
+            {business.cta.secondary}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FAQSection
+    faqs={[...generalFaqs, ...bookingFaqs]}
+    heading="Before you submit"
+    lede="A few answers about requesting service and what happens next."
+  />
+
+  <FinalCTA showCallNote={false} />
+</BaseLayout>
+
+<style>
+  .book-hero {
+    background: var(--color-bg-soft);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .book-hero__lede {
+    color: var(--color-muted);
+    margin-bottom: var(--space-5);
+  }
+
+  .book-panel {
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .book-alt {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .book-alt p {
+    color: var(--color-muted);
+  }
+
+  .book-alt__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .book-alt__call {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.75rem 1.1rem;
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-primary);
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .book-alt__call:hover {
+    background: var(--color-primary-soft);
+  }
+
+  @media (min-width: 48rem) {
+    .book-panel {
+      padding: var(--space-8);
+    }
+  }
+</style>

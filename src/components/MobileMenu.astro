@@ -1,0 +1,166 @@
+---
+import Icon from './Icon.astro';
+import { business } from '../data/business';
+
+interface LinkItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  currentPath: string;
+  primaryLinks: LinkItem[];
+}
+
+const { currentPath, primaryLinks } = Astro.props;
+const isActive = (href: string) =>
+  href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+
+<nav id="mobile-menu" class="mobile-menu" aria-label="Mobile navigation" aria-hidden="true">
+  <div class="mobile-menu__inner">
+    <ul class="mobile-menu__list">
+      <li><a href="/" class:list={['mobile-menu__link', { 'is-active': isActive('/') }]}>Home</a></li>
+      {primaryLinks.map((l) => (
+        <li>
+          <a href={l.href} class:list={['mobile-menu__link', { 'is-active': isActive(l.href) }]}>
+            {l.label}
+          </a>
+        </li>
+      ))}
+      <li><a href="/about/" class:list={['mobile-menu__link', { 'is-active': isActive('/about/') }]}>About</a></li>
+    </ul>
+
+    <div class="mobile-menu__cta">
+      <a class="mobile-menu__call" href={business.phone.href}>
+        <Icon name="phone-call" size={18} />
+        <span>
+          <strong>{business.phone.display}</strong>
+          <small>Call to discuss your appliance</small>
+        </span>
+      </a>
+      <a class="mobile-menu__book" href="/book-repair/">
+        <Icon name="arrow-right" size={18} />
+        {business.cta.primary}
+      </a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .mobile-menu {
+    position: fixed;
+    top: var(--header-total, 6.4rem);
+    left: 0;
+    right: 0;
+    height: calc(100svh - var(--header-total, 6.4rem));
+    overflow-y: auto;
+    background: var(--color-white);
+    border-top: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-0.5rem);
+    transition:
+      opacity var(--ease-base),
+      transform var(--ease-base),
+      visibility var(--ease-base);
+  }
+
+  .mobile-menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .mobile-menu__inner {
+    max-width: var(--container);
+    margin-inline: auto;
+    padding: var(--space-5);
+    padding-bottom: calc(var(--space-8) + env(safe-area-inset-bottom));
+  }
+
+  .mobile-menu__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-6);
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .mobile-menu__link {
+    display: block;
+    padding: var(--space-3) var(--space-2);
+    border-radius: var(--radius-md);
+    color: var(--color-body);
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .mobile-menu__link:hover,
+  .mobile-menu__link.is-active {
+    color: var(--color-primary);
+    background: var(--color-primary-soft);
+  }
+
+  .mobile-menu__cta {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .mobile-menu__call {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-navy);
+    text-decoration: none;
+  }
+
+  .mobile-menu__call svg {
+    flex: none;
+    color: var(--color-primary);
+  }
+
+  .mobile-menu__call span {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .mobile-menu__call small {
+    color: var(--color-muted);
+    font-size: var(--font-size-xs);
+  }
+
+  .mobile-menu__book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 0.9rem 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-weight: 650;
+    text-decoration: none;
+  }
+</style>
+
+<script>
+  // Keeps aria-hidden in sync with the visual state so screen readers
+  // never interact with a closed menu.
+  const menu = document.getElementById('mobile-menu');
+  if (menu) {
+    const sync = () => {
+      menu.setAttribute('aria-hidden', String(!menu.classList.contains('is-open')));
+      menu.querySelectorAll('a').forEach((a) => {
+        a.tabIndex = menu.classList.contains('is-open') ? 0 : -1;
+      });
+    };
+    sync();
+    new MutationObserver(sync).observe(menu, { attributes: true, attributeFilter: ['class'] });
+  }
+</script>

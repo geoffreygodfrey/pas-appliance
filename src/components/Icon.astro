@@ -1,0 +1,43 @@
+---
+import { ICONS, type IconName } from '../lib/icons';
+
+interface Props {
+  name: IconName;
+  size?: number;
+  strokeWidth?: number;
+  class?: string;
+  'aria-hidden'?: 'true' | 'false';
+  title?: string;
+  style?: string;
+}
+
+const {
+  name,
+  size = 20,
+  strokeWidth = 1.9,
+  class: className = '',
+  title,
+  'aria-hidden': ariaHidden = 'true',
+  style,
+  ...rest
+} = Astro.props;
+
+const Icon = ICONS[name];
+---
+
+{
+  Icon && (
+    <Icon
+      {...rest}
+      size={size}
+      stroke-width={strokeWidth}
+      class={className}
+      style={style}
+      aria-hidden={title ? undefined : ariaHidden}
+      role={title ? 'img' : undefined}
+      aria-label={title}
+    >
+      {title && <title>{title}</title>}
+    </Icon>
+  )
+}

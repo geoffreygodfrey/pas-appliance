@@ -1,0 +1,226 @@
+---
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import ApplianceImage from './ApplianceImage.astro';
+import { business } from '../data/business';
+import { IMAGES, type ImageAsset } from '../data/images';
+import type { IconName } from '../lib/icons';
+
+interface HeroPoint {
+  icon: IconName;
+  text: string;
+}
+
+interface Props {
+  kicker?: string;
+  title: string;
+  subtitle?: string;
+  image?: ImageAsset;
+  /** Priority of the hero image for LCP. */
+  imagePriority?: boolean;
+  bg?: 'light' | 'navy';
+  /** Display aspect ratio for the hero image, e.g. "4 / 3". */
+  imageAspect?: string;
+  /** Compact trust points shown in a row beneath the CTAs. */
+  points?: HeroPoint[];
+  /** Extra line rendered under the CTAs (slotted content is appended too). */
+  meta?: string;
+  primaryHref?: string;
+  primaryLabel?: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+  class?: string;
+}
+
+const {
+  kicker,
+  title,
+  subtitle,
+  image,
+  imagePriority = false,
+  bg = 'light',
+  imageAspect,
+  points,
+  primaryHref = '/book-repair/',
+  primaryLabel = business.cta.primary,
+  secondaryHref = business.phone.href,
+  secondaryLabel = business.cta.secondary,
+  class: className = '',
+  meta,
+} = Astro.props;
+
+const isNavy = bg === 'navy';
+const imageSrc = image ?? IMAGES.heroTechnician;
+const aspect = imageAspect ?? (isNavy ? '3 / 2' : '4 / 3');
+---
+
+<section class={['hero', isNavy ? 'hero--navy' : 'hero--light', className].filter(Boolean).join(' ')}>
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      {kicker && (
+        <p class={['hero__kicker', isNavy ? 'hero__kicker--light' : ''].join(' ')}>{kicker}</p>
+      )}
+      <h1>{title}</h1>
+      {subtitle && <p class="hero__subtitle">{subtitle}</p>}
+
+      <div class="hero__actions">
+        <Button href={primaryHref} variant={isNavy ? 'light' : 'primary'} size="lg" iconRight="arrow-right">
+          {primaryLabel}
+        </Button>
+        <Button
+          href={secondaryHref}
+          variant={isNavy ? 'ghost-light' : 'secondary'}
+          size="lg"
+          icon="phone-call"
+        >
+          {secondaryLabel}
+        </Button>
+      </div>
+
+      {points && points.length > 0 && (
+        <ul class="hero__points">
+          {points.map((point) => (
+            <li>
+              <Icon name={point.icon} size={16} aria-hidden="true" />
+              {point.text}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {meta && <p class="hero__meta">{meta}</p>}
+      <slot />
+    </div>
+
+    {imageSrc && (
+      <div class="hero__media" aria-hidden={image ? undefined : 'true'}>
+        <ApplianceImage
+          asset={imageSrc}
+          aspect={aspect}
+          loading={imagePriority ? 'eager' : 'lazy'}
+          fetchpriority={imagePriority ? 'high' : 'auto'}
+          widths={[480, 768, 1080]}
+          sizes="(min-width: 76rem) 620px, (min-width: 48rem) 48vw, 100vw"
+        />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--space-6) var(--space-8);
+    overflow: hidden;
+  }
+
+  .hero--navy {
+    background: var(--color-navy);
+    color: rgb(255 255 255 / 0.88);
+  }
+
+  .hero--navy h1 {
+    color: var(--color-white);
+  }
+
+  .hero__grid {
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  .hero__kicker {
+    display: inline-block;
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  .hero__kicker--light {
+    color: #7cb2ff;
+  }
+
+  .hero__copy h1 {
+    margin-bottom: var(--space-4);
+    max-width: 24ch;
+  }
+
+  .hero__subtitle {
+    margin: 0 0 var(--space-5);
+    font-size: 1.0625rem;
+    line-height: var(--leading-body);
+    color: var(--color-muted);
+    max-width: 54ch;
+  }
+
+  .hero--navy .hero__subtitle {
+    color: rgb(255 255 255 / 0.78);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .hero__points {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-5) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    max-width: 56ch;
+  }
+
+  .hero__points li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-body);
+  }
+
+  .hero__points svg {
+    flex: none;
+    color: var(--color-primary);
+  }
+
+  .hero--navy .hero__points li {
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .hero--navy .hero__points svg {
+    color: #7cb2ff;
+  }
+
+  .hero__meta {
+    margin: var(--space-5) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    max-width: 52ch;
+  }
+
+  .hero--navy .hero__meta {
+    color: rgb(255 255 255 / 0.65);
+  }
+
+  .hero__media {
+    width: 100%;
+  }
+
+  /* Desktop: balanced two-column hero with the image at ~48% width. */
+  @media (min-width: 48rem) {
+    .hero {
+      padding-block: var(--space-8) var(--space-10);
+    }
+
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.92fr);
+      gap: var(--space-8);
+    }
+  }
+</style>

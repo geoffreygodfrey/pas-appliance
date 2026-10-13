@@ -1,0 +1,188 @@
+---
+import Icon from './Icon.astro';
+import type { IconName } from '../lib/icons';
+
+interface Props {
+  /** URL — renders an anchor when present, a button otherwise. */
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'dark' | 'light' | 'ghost-light';
+  size?: 'sm' | 'md' | 'lg';
+  /** Full-width on small screens. */
+  block?: boolean;
+  /** Leading icon. */
+  icon?: IconName;
+  iconRight?: IconName;
+  buttonType?: 'button' | 'submit';
+  disabled?: boolean;
+  onClick?: string;
+  rel?: string;
+  target?: string;
+  ariaLabel?: string;
+  title?: string;
+  /** Extra class names. */
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  block = false,
+  icon,
+  iconRight,
+  buttonType = 'button',
+  disabled = false,
+  onClick,
+  rel,
+  target,
+  ariaLabel,
+  title,
+  class: className = '',
+} = Astro.props;
+
+const classes = [`button`, `button--${variant}`, `button--${size}`, block ? 'button--block' : '', className]
+  .filter(Boolean)
+  .join(' ');
+
+const common = {
+  class: classes,
+  'aria-label': ariaLabel ?? undefined,
+  title: title ?? undefined,
+};
+
+const attrs: Record<string, unknown> = { ...common };
+if (href) {
+  attrs.href = href;
+  attrs.rel = rel ?? undefined;
+  attrs.target = target ?? undefined;
+} else {
+  attrs.type = buttonType;
+  attrs.disabled = disabled || undefined;
+  attrs.onclick = onClick ?? undefined;
+}
+---
+
+{
+  href ? (
+    <a {...attrs}>
+      {icon && <Icon name={icon} size={18} />}
+      <span><slot /></span>
+      {iconRight && <Icon name={iconRight} size={18} />}
+    </a>
+  ) : (
+    <button {...attrs}>
+      {icon && <Icon name={icon} size={18} />}
+      <span><slot /></span>
+      {iconRight && <Icon name={iconRight} size={18} />}
+    </button>
+  )
+}
+
+<style>
+  .button {
+    --b-fg: var(--color-white);
+    --b-bg: var(--color-primary);
+    --b-border: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 0.72rem 1.25rem;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--b-border);
+    background: var(--b-bg);
+    color: var(--b-fg);
+    font-family: inherit;
+    font-size: var(--font-size-body);
+    font-weight: 600;
+    line-height: 1.1;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--ease-fast),
+      border-color var(--ease-fast),
+      color var(--ease-fast),
+      transform var(--ease-fast);
+  }
+
+  .button:hover {
+    --b-bg: var(--color-primary-hover);
+    color: var(--b-fg);
+  }
+
+  .button:active {
+    transform: translateY(1px);
+  }
+
+  .button svg {
+    flex: none;
+  }
+
+  .button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  /* Variants */
+  .button--secondary {
+    --b-fg: var(--color-primary);
+    --b-bg: var(--color-white);
+    --b-border: var(--color-border-strong);
+  }
+
+  .button--secondary:hover {
+    --b-bg: var(--color-primary-soft);
+    --b-border: var(--color-primary-border);
+  }
+
+  .button--dark {
+    --b-bg: var(--color-navy);
+  }
+
+  .button--dark:hover {
+    --b-bg: var(--color-navy-soft);
+  }
+
+  .button--light {
+    --b-fg: var(--color-primary);
+    --b-bg: var(--color-white);
+    --b-border: var(--color-white);
+  }
+
+  .button--light:hover {
+    --b-bg: var(--color-primary-soft);
+    --b-border: var(--color-white);
+  }
+
+  .button--ghost-light {
+    --b-fg: var(--color-white);
+    --b-bg: transparent;
+    --b-border: rgb(255 255 255 / 0.55);
+  }
+
+  .button--ghost-light:hover {
+    --b-bg: rgb(255 255 255 / 0.12);
+    --b-border: var(--color-white);
+  }
+
+  /* Sizes */
+  .button--sm {
+    padding: 0.5rem 0.875rem;
+    font-size: var(--font-size-sm);
+  }
+
+  .button--lg {
+    padding: 0.9rem 1.5rem;
+    font-size: 1.0625rem;
+  }
+
+  .button--block {
+    width: 100%;
+  }
+
+  @media (min-width: 48rem) {
+    .button--block {
+      width: auto;
+    }
+  }
+</style>

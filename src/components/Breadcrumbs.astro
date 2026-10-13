@@ -1,0 +1,70 @@
+---
+import Icon from './Icon.astro';
+
+export interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+const breadcrumbs = [{ label: 'Home', href: '/' }, ...items];
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {breadcrumbs.map((cr, i) => {
+      const isLast = i === breadcrumbs.length - 1;
+      return (
+        <li>
+          {cr.href && !isLast ? (
+            <a href={cr.href}>{cr.label}</a>
+          ) : (
+            <span aria-current={isLast ? 'page' : undefined}>{cr.label}</span>
+          )}
+          {!isLast && <Icon name="chevron-right" size={14} aria-hidden="true" />}
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0;
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
+
+  .breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .breadcrumbs svg {
+    color: var(--color-muted);
+  }
+
+  .breadcrumbs a {
+    color: var(--color-body);
+    text-decoration: none;
+  }
+
+  .breadcrumbs a:hover {
+    color: var(--color-primary);
+  }
+
+  .breadcrumbs span[aria-current='page'] {
+    color: var(--color-muted);
+    font-weight: 600;
+  }
+</style>

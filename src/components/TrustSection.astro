@@ -1,0 +1,116 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+import type { IconName } from '../lib/icons';
+
+interface Benefit {
+  icon: IconName;
+  title: string;
+  copy: string;
+}
+
+const benefits: Benefit[] = [
+  {
+    icon: 'message-square',
+    title: 'Clear communication',
+    copy: 'We explain what we find in plain language and keep you informed before anything is done.',
+  },
+  {
+    icon: 'clipboard-list',
+    title: 'Explained diagnostics & estimates',
+    copy: 'The diagnostic process and any applicable fees are discussed and agreed before repair work proceeds.',
+  },
+  {
+    icon: 'map-pin',
+    title: 'Service-area transparency',
+    copy: 'Coverage is confirmed for your community before a visit is arranged — no guessing about where we can help.',
+  },
+  {
+    icon: 'phone-call',
+    title: 'Easy ways to request service',
+    copy: 'Request service online with a plain-language description, or call to discuss your appliance directly.',
+  },
+];
+
+interface Props {
+  heading?: string;
+  intro?: string;
+}
+
+const { heading = 'Why customers choose us', intro } = Astro.props;
+---
+
+<section class="section section-soft">
+  <div class="container">
+    <SectionHeading
+      title={heading}
+      lede={
+        intro ??
+        'Know what to expect when you request appliance repair — from explaining the problem to discussing the estimate.'
+      }
+    />
+    <ul class="trust-grid">
+      {benefits.map((benefit) => (
+        <li class="trust-item">
+          <span class="trust-item__icon" aria-hidden="true">
+            <Icon name={benefit.icon} size={24} strokeWidth={1.8} />
+          </span>
+          <h3>{benefit.title}</h3>
+          <p>{benefit.copy}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .trust-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6) var(--space-5);
+  }
+
+  .trust-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .trust-item__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .trust-item h3 {
+    font-size: 1.125rem;
+    margin: 0;
+  }
+
+  .trust-item p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-muted);
+    line-height: var(--leading-body);
+  }
+
+  @media (min-width: 40rem) {
+    .trust-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .trust-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
